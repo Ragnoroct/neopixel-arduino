@@ -1,4 +1,6 @@
 ## Test Without Arduino
 ```bash
-MSYS_NO_PATHCONV=1 docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app gcc:4.9 bash
+# Compile simulator on windows
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+cl /EHsc main/simulator.cpp && rm simulator.obj && .\simulator.exe
 ```
