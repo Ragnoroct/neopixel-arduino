@@ -1,14 +1,19 @@
+#define SIMULATION true
+
 #include <iostream>
 #include <windows.h>
 #include <string>
-// #include <unistd.h>
+#include "main.ino"
+
 
 std::string getColor(int);
 
 int main() 
 {
     while (true) {
-        std::cout << getColor(0xe67e22) << "\n";
+        std::cout << "\r";
+        std::cout << getColor(0xe67e22);
+        std::cout.flush();
         Sleep(150);
     }
     return 0;

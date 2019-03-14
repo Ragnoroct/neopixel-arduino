@@ -1,0 +1,27 @@
+// tasks.json
+{
+    "version": "2.0.0",
+    "echoCommand": true,
+    "tasks": [
+        {
+            "label": "compile",
+            "command": "cmd",
+            "type": "process",
+            "args": [
+                "/C %vcvarsall% && cl /Od /Zi /EHsc /Fd:%outpath%/vc141.pdb /Fo:%outpath%/%TargetName%.obj ./main.cpp /link /OUT:%outpath%/%TargetName%.%TargetExt% /PDB:%outpath%/%TargetName%.pdb",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        }
+    ],
+    "options": {
+        "env": {
+            "outpath": "out", // must exist before running
+            "TargetName": "hello",
+            "TargetExt": "exe",
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64",
+        }
+    }
+}
