@@ -39,6 +39,7 @@ void setup() {
   pinMode(BLUE_LED, OUTPUT); 
   pinMode(RED_LED, OUTPUT);
   irrecv.enableIRIn(); // Start the receiver
+  Serial.begin(9600);
 //  Serial.begin(115200);
 }
 
