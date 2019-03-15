@@ -23,7 +23,7 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_
 // DotStar strip, which has changed over time in different production runs.
 // Your code just uses R,G,B colors, the library then reassigns as needed.
 // Default is DOTSTAR_BRG, so change this if you have an earlier strip.
-HealthController healthController = HealthController(&strip);
+// HealthController healthController = HealthController(&strip);
 
 // Hardware SPI is a little faster, but must be wired to specific pins
 // (Arduino Uno = pin 11 for data, 13 for clock, other boards are different).
