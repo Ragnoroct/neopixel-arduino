@@ -4,6 +4,8 @@
 #include <SPI.h>
 #endif
 
+#include "controllers.h"
+
 #define NUMPIXELS 60 // Number of LEDs in strip
 #define DATAPIN    1
 #define CLOCKPIN   0
@@ -15,6 +17,7 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_
 // DotStar strip, which has changed over time in different production runs.
 // Your code just uses R,G,B colors, the library then reassigns as needed.
 // Default is DOTSTAR_BRG, so change this if you have an earlier strip.
+HealthController healthController = HealthController(&strip);
 
 // Hardware SPI is a little faster, but must be wired to specific pins
 // (Arduino Uno = pin 11 for data, 13 for clock, other boards are different).
@@ -29,8 +32,8 @@ void setup() {
 // Runs 10 LEDs at a time along strip, cycling through red, green and blue.
 // This requires about 200 mA for all the 'on' pixels + 1 mA per 'off' pixel.
 
-int      head  = 0, tail = -10; // Index of first 'on' and 'off' pixels
-uint32_t color = 0xFF0000;      // 'On' color (starts red)
+// int      head  = 0, tail = -10; // Index of first 'on' and 'off' pixels
+// uint32_t color = 0xFF0000;      // 'On' color (starts red)
 
 void healthLoop() {
   strip.setPixelColor(head, color); // 'On' pixel at head
@@ -54,7 +57,8 @@ void poisonLoop() {
 
 void loop() {
 //  strip.setBrightness(1);
-  healthLoop();
+  healthController.loop();
+  // healthLoop();
 //  IR_Value = analogRead(IR_Pin);
 //  Serial.println("delay value for LED = "+ IR_Value);
 //  strip.setPixelColor(head, color); // 'On' pixel at head
