@@ -40,7 +40,6 @@ void setup() {
   pinMode(RED_LED, OUTPUT);
   irrecv.enableIRIn(); // Start the receiver
   Serial.begin(9600);
-//  Serial.begin(115200);
 }
 
 // Runs 10 LEDs at a time along strip, cycling through red, green and blue.
@@ -81,23 +80,26 @@ void offLoop() {
 }
 
 void loop() {
-  int i=0;
-  if (irrecv.decode(&results)) {
-    translateIR(&remoteAction);
-    irrecv.resume(); // Receive the next value
-  }
+  // int i=0;
+  // if (irrecv.decode(&results)) {
+  //   translateIR(&remoteAction);
+  //   irrecv.resume(); // Receive the next value
+  // }
 
-  if (isPaused) {
-    offLoop();
-    return;
-  }
+  // if (isPaused) {
+  //   offLoop();
+  //   return;
+  // }
     
 //    ir = analogRead(IR_Pin); 
 //  strip.setBrightness(1);
-  healthController.loop();
+  strip.setPixelColor(1, 0xFF0000);
+  strip.show();
+  // healthController.loop();
+  // Serial.println(healthController);
   // healthLoop();
 //  IR_Value = analogRead(IR_Pin);
-  healthLoop();
+  // healthLoop();
 //  Serial.println("delay value for LED = "+ IR_Value);
 //  strip.setPixelColor(head, color); // 'On' pixel at head
 //  strip.setPixelColor(tail, 0);     // 'Off' pixel at tail

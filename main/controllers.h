@@ -1,30 +1,53 @@
 #include <Adafruit_DotStar.h>
 
-class HealthController {
-    private:
-        Adafruit_DotStar* strip;
-        const int HEALTH_RED = 0xE80000;
-        const int FRONT = 7;
-        const int BACK = 0;
-        int currentPixel = 0;
-    public:
-        HealthController(Adafruit_DotStar*);
-        void loop();
-};
+namespace Controllers
+{
+    // Health functions
+    class HealthController {
+        private:
+            Adafruit_DotStar* strip2;
+            int      head  = 0, tail = -10; // Index of first 'on' and 'off' pixels
+            uint32_t color = 0xFF0000;      // 'On' color (starts red)
+            const int HEALTH_RED = 0xE80000;
+            const int FRONT = 7;
+            const int BACK = 0;
+            int currentPixel = 0;
+        public:
+            HealthController(Adafruit_DotStar*);
+            void loop();
+    };
 
-#define NUMPIXELS 60 // Number of LEDs in strip
-#define DATAPIN    1
-#define CLOCKPIN   0
+    HealthController::HealthController(Adafruit_DotStar* strip) {
+        this->strip2 = strip;
+    }
 
 // Adafruit_DotStar strip = 
 
-#define NUMPIXELS 60 // Number of LEDs in strip
-int      head  = 0, tail = -10; // Index of first 'on' and 'off' pixels
-uint32_t color = 0xFF0000;      // 'On' color (starts red)
+    void HealthController::loop() {
+        int tail;
 
-HealthController::HealthController(Adafruit_DotStar* injectedStrip)
-{
-    strip = new Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
+        // if (currentPixel == BACK)
+        //     tail = FRONT;
+        // else if (currentPixel == FRONT)
+        //     tail = BACK;
+        // else
+        //     tail = currentPixel - 1;
+
+        this->strip2->setPixelColor(30, 0xFF0000);
+
+        // strip->setPixelColor(tail, 0); // 'On' pixel at head
+        // strip->setPixelColor(currentPixel, HEALTH_RED);     // 'Off' pixel at tail
+        this->strip2->show();                     // Refresh strip
+        delay(500);                        // Pause 20 milliseconds (~50 FPS)
+
+        // Serial.println(currentPixel);
+
+        // currentPixel++;
+
+        // if (currentPixel > FRONT) {
+        //     currentPixel = BACK;
+        // }
+    } 
 }
 
 void HealthController::loop() {
