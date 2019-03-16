@@ -118,7 +118,6 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
         case IR_9:
             break;
   }
-    delay(500);
 } 
 
 void stripLoop() {
