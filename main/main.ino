@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <IRremote.h>
 #include "color_lib.h"
+#include "fire_controller.h"
 
 #define NUMPIXELS 30 // Number of LEDs in strip
 #define DATAPIN    3
@@ -38,11 +39,12 @@ int RED_LED = 12;
 
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
 
+//Controllers
+FireController fireController = FireController(&strip);
+
 IRrecv irrecv(RECV_PIN);
 decode_results results;
 
-//Modes
-int healthMode = 0;
 
 void setup() {
   strip.begin(); // Initialize pins for output
@@ -53,6 +55,10 @@ void setup() {
   irrecv.enableIRIn(); // Start the receiver
   Serial.begin(9600);
 }
+
+//Modes
+int healthMode = 0;
+int fireMode = 0;
 
 int head  = 0;
 int remoteAction = 0;
@@ -106,10 +112,13 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             break;
         //Fire
         case IR_4:
+            fireController.setMode(0);
             break;
         case IR_5:
+            fireController.setMode(1);
             break;
         case IR_6:
+            fireController.setMode(2);
             break;
         //Poison
         case IR_7:
@@ -121,11 +130,13 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
   }
 } 
 
+
 void stripLoop() {
   updateLightning(head);
   updateHealth(head);
   updateCold(head);
-  updateFire(head);
+//   updateFire(head);
+    fireController.loop();
   updatePoison(head);
   strip.show();                     // Refresh strip
 
@@ -231,32 +242,6 @@ void updateCold(int pix) {
         strip.setPixelColor(i, coldColor);
       }
    }
-}
-
-
-int fFire = 18;
-int eFire = 23;
-float fireStep[10] = { .1, .2, .3, .4, .5, .6, 1 };
-uint32_t fireColor = 0xed310b;
-int fireDuration = 400; //how many steps for whole animation
-int fireStepsPerTransition = fireDuration / (sizeof(fireStep)/sizeof(fireStep[0]));
-int fireCurrentStep = 0;
-void updateFire(int pix) {
-    int stepCoefficientIndex = fireCurrentStep / fireStepsPerTransition;
-    float colorCoefficient = fireStep[stepCoefficientIndex];
-
-    CRGB color = fireColor;
-    color %= (colorCoefficient * 255);
-
-    for (int i = fFire; i <= eFire; i++) {
-        strip.setPixelColor(i, rgbToHex(color));
-    }
-
-    fireCurrentStep++;
-    if (fireCurrentStep > fireDuration) {
-        fireCurrentStep = 0;
-        //probably end it
-    }
 }
 
 int fPoison = 24;

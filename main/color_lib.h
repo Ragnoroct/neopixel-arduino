@@ -1,6 +1,7 @@
-#include <FastLED.h>
+#ifndef COLOR_LIB_H
+#define COLOR_LIB_H
 
-static CHSV rgbToHsv(CRGB rgb);
+#include <FastLED.h>
 
 // uint32_t linearShade(float percent, uint32_t color) {
 //         int r = ((color >> 16) & 0xFF); // Extract the RR byte
@@ -68,3 +69,5 @@ CHSV rgbToHsv(CRGB in)
 
     return out;
 }
+
+#endif /* COLOR_LIB_H */
