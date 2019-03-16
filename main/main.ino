@@ -6,10 +6,6 @@
 #define DATAPIN    3
 #define CLOCKPIN   2
 #define PLAY_PAUSE FFC23D
-#define IR_1
-#define IR_2
-#define IR_7 0xFF42BD
-#define IR_8 0xFF4AB5
 
 int IR_Pin = A0;
 int IR_Value = 0;
@@ -210,8 +206,8 @@ int fCold = 12;
 int eCold = 17;
 int coldCounter = 0;
 uint32_t coldColor = 0x000000;
-int coldColorTrack = 0;
-int coldStep = 1;
+int coldColorTrack = 0; // If you add 0x11 to 0xFF, you will overflow, in order to keep track of "steps" of brightness, this variable will go from 0-16. This is a strong case to use your color operation -Jonathan
+uint32_t coldStep = 1;
 
 void updateCold(int pix) {
    if (pix != fCold) return;
