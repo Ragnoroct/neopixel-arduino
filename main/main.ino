@@ -1,9 +1,6 @@
-
-#ifndef SIMULATION
 #include <Adafruit_DotStar.h>
 #include <SPI.h>
 #include <IRremote.h>
-#endif
 
 #define NUMPIXELS 30 // Number of LEDs in strip
 #define DATAPIN    3
@@ -16,10 +13,35 @@ int RECV_PIN = A5;
 int BLUE_LED = 13;
 int RED_LED = 12;
 
+#define IR_CHANNEL_MINUS 0xFFA25D  
+#define IR_CHANNEL 0xFF629D  
+#define IR_CHANNEL_PLUS 0xFFE21D  
+#define IR_BLUE_LED_OFF 0xFF22DD  
+#define IR_BLUE_LED_ON 0xFF02FD  
+#define IR_PLAYPAUSE 0xFFC23D  
+#define IR_VOLUME_MINUS 0xFFE01F  
+#define IR_VOLUME_PLUS 0xFFA857  
+#define IR_EQ 0xFF906F  
+#define IR_0 0xFF6897  
+#define IR_100_PLUS 0xFF9867  
+#define IR_200_PLUS 0xFFB04F  
+#define IR_1 0xFF30CF  
+#define IR_2 0xFF18E7  
+#define IR_3 0xFF7A85  
+#define IR_4 0xFF10EF  
+#define IR_5 0xFF38C7  
+#define IR_6 0xFF5AA5  
+#define IR_7 0xFF42BD  
+#define IR_8 0xFF4AB5  
+#define IR_9 0xFF52AD  
+
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
+
+//Modes
+int healthMode = 0;
 
 void setup() {
   strip.begin(); // Initialize pins for output
@@ -37,11 +59,60 @@ bool isPaused = 0;
 
 void translateIR(int * remoteAction) // takes action based on IR code received describing Car MP3 IR codes 
 {
-  switch(results.value) {
-    case 0xFFC23D:
-      isPaused ^= 1;  // Play or pause
+    switch(results.value) {
+        case IR_CHANNEL_MINUS:
+            break;
+        case IR_CHANNEL:
+            break;
+        case IR_CHANNEL_PLUS:
+            break;
+        case IR_BLUE_LED_OFF:
+            break;
+        case IR_BLUE_LED_ON:
+            break;
+        //Pause loop
+        case IR_PLAYPAUSE:
+            isPaused ^= 1;
+            break;
+        //Lightning
+        case IR_VOLUME_MINUS:
+            break;
+        case IR_VOLUME_PLUS:
+            break;
+        case IR_EQ:
+            break;
+        //Health
+        case IR_0:
+            healthMode = 0;
+            break;
+        case IR_100_PLUS:
+            healthMode = 1;
+            break;
+        case IR_200_PLUS:
+            break;
+        //Cold
+        case IR_1:
+            break;
+        case IR_2:
+            break;
+        case IR_3:
+            break;
+        //Fire
+        case IR_4:
+            break;
+        case IR_5:
+            break;
+        case IR_6:
+            break;
+        //Poison
+        case IR_7:
+            break;
+        case IR_8:
+            break;
+        case IR_9:
+            break;
   }
-  delay(500);
+    delay(500);
 } 
 
 void stripLoop() {
@@ -74,11 +145,55 @@ void updateLightning(int pix) {
    }
 }
 
+int counterLastTime = 0;
+bool counter(int &counter, int timeout)
+{
+    counter++;
+    if (counter > timeout) {
+        counter = 0;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 int fHealth = 6;
 int eHealth = 11;
+int healthCurrentPixel = 0;
+int healthCounter = 0;
+int healthOn = true;
+const uint32_t HEALTH_COLOR = strip.Color(255, 0, 0);
+//Modes:
+//0. back and forth
+//1. flashing
 void updateHealth(int pix) {
-   if (pix < fHealth || pix > eHealth) return;
-   strip.setPixelColor(pix, 0x00FF00);
+    int tail = 0;
+    uint32_t color;
+
+    //Normal pulsing mode (0)
+    if (healthMode == 0) {
+        if (counter(healthCounter, 10) == false) return;
+
+        if (healthCurrentPixel == fHealth)
+            tail = eHealth;
+        else
+            tail = healthCurrentPixel - 1;
+
+        strip.setPixelColor(tail, 0);   //turn last pixel off
+        strip.setPixelColor(healthCurrentPixel, HEALTH_COLOR);
+        healthCurrentPixel++;
+        if (healthCurrentPixel > eHealth)
+            healthCurrentPixel = fHealth;
+    //Flashing mode (1)
+    } else {
+        if (counter(healthCounter, 25) == false) return;
+        uint32_t color = healthOn ? HEALTH_COLOR : 0;
+        for (int i = fHealth; i <= eHealth; i++) {
+            strip.setPixelColor(i, color);
+        }
+        healthOn = !healthOn;
+    }
 }
 
 int fCold = 12;
