@@ -16,7 +16,7 @@ int RECV_PIN = A5;
 int BLUE_LED = 13;
 int RED_LED = 12;
 
-Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
+Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
