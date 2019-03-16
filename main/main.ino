@@ -237,24 +237,19 @@ void updateCold(int pix) {
 int fFire = 18;
 int eFire = 23;
 float fireStep[10] = { .1, .2, .3, .4, .5, .6, 1 };
-uint32_t fireColor = 0xe95822;
-int fireDuration = 100; //how many steps for whole animation
+uint32_t fireColor = 0xed310b;
+int fireDuration = 400; //how many steps for whole animation
 int fireStepsPerTransition = fireDuration / (sizeof(fireStep)/sizeof(fireStep[0]));
 int fireCurrentStep = 0;
 void updateFire(int pix) {
     int stepCoefficientIndex = fireCurrentStep / fireStepsPerTransition;
     float colorCoefficient = fireStep[stepCoefficientIndex];
 
-    //Change shade/brightness of color
-    CHSV hsvColor = rgbToHsv(CRGB(fireColor));
-    hsvColor.s = colorCoefficient;
-    // hsv hsvColor = rgb2hsv(hex2rgb(fireColor));
-    // rgb rgbColor = hsv2rgb(hsvColor);
-    // uint32_t color = rgb2hex(rgbColor);
-    // uint32_t color = linearShade(colorCoefficient, rgbCo);
+    CRGB color = fireColor;
+    color %= (colorCoefficient * 255);
 
     for (int i = fFire; i <= eFire; i++) {
-        strip.setPixelColor(i, hsvColor);
+        strip.setPixelColor(i, rgbToHex(color));
     }
 
     fireCurrentStep++;

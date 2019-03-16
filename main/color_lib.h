@@ -19,7 +19,10 @@ static CHSV rgbToHsv(CRGB rgb);
 
 uint32_t rgbToHex(CRGB color)
 {
-    return ((color.r & 0xff) << 16) + ((color.g & 0xff) << 8) + (color.b & 0xff);
+    uint32_t r = color.r;
+    uint32_t b = color.b;
+    uint32_t g = color.g;
+    return ((r & 0xFF) << 16) + ((g & 0xFF) << 8) + (b & 0xFF);
 }
 
 CHSV rgbToHsv(CRGB in)
@@ -47,7 +50,7 @@ CHSV rgbToHsv(CRGB in)
         // if max is 0, then r = g = b = 0              
         // s = 0, h is undefined
         out.s = 0.0;
-        out.h = NAN;                            // its now undefined
+        out.h = 0.0;                            // its now undefined
         return out;
     }
     if( in.r >= max )                           // > is bogus, just keeps compilor happy
