@@ -6,6 +6,10 @@
 #define DATAPIN    3
 #define CLOCKPIN   2
 #define PLAY_PAUSE FFC23D
+#define IR_1
+#define IR_2
+#define IR_7 0xFF42BD
+#define IR_8 0xFF4AB5
 
 int IR_Pin = A0;
 int IR_Value = 0;
@@ -56,6 +60,8 @@ void setup() {
 int head  = 0;
 int remoteAction = 0;
 bool isPaused = 0;
+bool increaseCold = false;
+bool decreaseCold = false;
 
 void translateIR(int * remoteAction) // takes action based on IR code received describing Car MP3 IR codes 
 {
@@ -92,8 +98,12 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             break;
         //Cold
         case IR_1:
+            decreaseCold = !decreaseCold;
+            increaseCold = false;
             break;
         case IR_2:
+            increaseCold = !increaseCold;
+            decreaseCold = false;
             break;
         case IR_3:
             break;
@@ -198,11 +208,34 @@ void updateHealth(int pix) {
 
 int fCold = 12;
 int eCold = 17;
-int coldT = 3;
 int coldCounter = 0;
+uint32_t coldColor = 0x000000;
+int coldColorTrack = 0;
+int coldStep = 1;
+
 void updateCold(int pix) {
-   if (pix < fCold || pix > eCold) return;
-   strip.setPixelColor(pix, 0xFF0000);
+   if (pix != fCold) return;
+   if (increaseCold) {
+      coldColorTrack += coldStep;
+      coldColor += coldStep * 0x110000;
+      if (coldColorTrack > 16) {
+        coldColorTrack = 16;
+        coldColor = 0xFF0000;
+      }
+      for (int i = fCold; i <= eCold; i++) {
+        strip.setPixelColor(i, coldColor);
+      }
+   } else if (decreaseCold) {
+      coldColorTrack -= coldStep;
+      coldColor -= coldStep * 0x110000;
+      if (coldColorTrack < 0) {
+        coldColorTrack = 0;
+        coldColor = 0x000000;
+      }
+      for (int i = fCold; i <= eCold; i++) {
+        strip.setPixelColor(i, coldColor);
+      }
+   }
 }
 
 int fFire = 18;
