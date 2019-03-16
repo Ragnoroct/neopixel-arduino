@@ -39,7 +39,7 @@ void setup() {
   pinMode(BLUE_LED, OUTPUT); 
   pinMode(RED_LED, OUTPUT);
   irrecv.enableIRIn(); // Start the receiver
-  Serial.begin(9600);
+//  Serial.begin(9600);
 }
 
 // Runs 10 LEDs at a time along strip, cycling through red, green and blue.
@@ -93,7 +93,7 @@ void loop() {
     
 //    ir = analogRead(IR_Pin); 
 //  strip.setBrightness(1);
-  strip.setPixelColor(1, 0xFF0000);
+  strip.setPixelColor(1, 0xFFFFFF);
   strip.show();
   // healthController.loop();
   // Serial.println(healthController);
