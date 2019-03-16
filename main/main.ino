@@ -58,9 +58,20 @@ void stripLoop() {
 
 int fLightning = 0;
 int eLightning = 5;
+int lightningCounter = 0;
+int lightningT = 10;
 void updateLightning(int pix) {
-   if (pix < fLightning || pix > eLightning) return;
-   strip.setPixelColor(pix, 0x00FFFF);
+   if (pix != fLightning) return;
+   if (++lightningCounter == lightningT) {
+      for (int i = fLightning; i <= eLightning; i++) {
+        strip.setPixelColor(i, 0x00FFFF);
+      }
+      lightningCounter = 0;
+   } else if (lightningCounter == lightningT/2) {
+      for (int i = fLightning; i <= eLightning; i++) {
+        strip.setPixelColor(i, 0);
+    }
+   }
 }
 
 int fHealth = 6;
