@@ -1,6 +1,7 @@
 #include <Adafruit_DotStar.h>
 #include <SPI.h>
 #include <IRremote.h>
+#include "color_lib.h"
 
 #define NUMPIXELS 30 // Number of LEDs in strip
 #define DATAPIN    3
@@ -127,7 +128,6 @@ void stripLoop() {
   updateFire(head);
   updatePoison(head);
   strip.show();                     // Refresh strip
-  delay(5);                        // Pause 20 milliseconds (~50 FPS)
 
   if(++head >= NUMPIXELS) head = 0;
 }
@@ -204,25 +204,25 @@ void updateHealth(int pix) {
 int fCold = 12;
 int eCold = 17;
 int coldCounter = 0;
-uint32_t coldColor = 0x000000;
+uint32_t coldColor = strip.Color(17, 24, 24);//0x000000;
 int coldColorTrack = 0; // If you add 0x11 to 0xFF, you will overflow, in order to keep track of "steps" of brightness, this variable will go from 0-16. This is a strong case to use your color operation -Jonathan
-uint32_t coldStep = 1;
+float coldStep = .0001;
 
 void updateCold(int pix) {
    if (pix != fCold) return;
    if (increaseCold) {
       coldColorTrack += coldStep;
-      coldColor += coldStep * 0x110000;
+      coldColor += coldStep * coldColor;
       if (coldColorTrack > 16) {
         coldColorTrack = 16;
-        coldColor = 0xFF0000;
+        coldColor = 0xA5F2F3;
       }
       for (int i = fCold; i <= eCold; i++) {
         strip.setPixelColor(i, coldColor);
       }
    } else if (decreaseCold) {
       coldColorTrack -= coldStep;
-      coldColor -= coldStep * 0x110000;
+      coldColor -= coldStep * coldColor;
       if (coldColorTrack < 0) {
         coldColorTrack = 0;
         coldColor = 0x000000;
@@ -233,11 +233,35 @@ void updateCold(int pix) {
    }
 }
 
+
 int fFire = 18;
 int eFire = 23;
+float fireStep[10] = { .1, .2, .3, .4, .5, .6, 1 };
+uint32_t fireColor = 0xe95822;
+int fireDuration = 100; //how many steps for whole animation
+int fireStepsPerTransition = fireDuration / (sizeof(fireStep)/sizeof(fireStep[0]));
+int fireCurrentStep = 0;
 void updateFire(int pix) {
-   if (pix < fFire || pix > eFire) return;
-   strip.setPixelColor(pix, 0x00FFA5);
+    int stepCoefficientIndex = fireCurrentStep / fireStepsPerTransition;
+    float colorCoefficient = fireStep[stepCoefficientIndex];
+
+    //Change shade/brightness of color
+    CHSV hsvColor = rgbToHsv(CRGB(fireColor));
+    hsvColor.s = colorCoefficient;
+    // hsv hsvColor = rgb2hsv(hex2rgb(fireColor));
+    // rgb rgbColor = hsv2rgb(hsvColor);
+    // uint32_t color = rgb2hex(rgbColor);
+    // uint32_t color = linearShade(colorCoefficient, rgbCo);
+
+    for (int i = fFire; i <= eFire; i++) {
+        strip.setPixelColor(i, hsvColor);
+    }
+
+    fireCurrentStep++;
+    if (fireCurrentStep > fireDuration) {
+        fireCurrentStep = 0;
+        //probably end it
+    }
 }
 
 int fPoison = 24;
