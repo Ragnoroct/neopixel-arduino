@@ -3,6 +3,7 @@
 #include <IRremote.h>
 #include "color_lib.h"
 #include "fire_controller.h"
+#include "poison_controller.h"
 
 #define NUMPIXELS 30 // Number of LEDs in strip
 #define DATAPIN    3
@@ -41,6 +42,7 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_
 
 //Controllers
 FireController fireController = FireController(&strip);
+PoisonController poisonController = PoisonController(&strip);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
@@ -122,25 +124,27 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             break;
         //Poison
         case IR_7:
+            poisonController.setMode(0);
             break;
         case IR_8:
+            poisonController.setMode(1);
             break;
         case IR_9:
+            poisonController.setMode(2);
             break;
   }
 } 
 
 
 void stripLoop() {
-  updateLightning(head);
-  updateHealth(head);
-  updateCold(head);
-//   updateFire(head);
+    updateLightning(head);
+    updateHealth(head);
+    updateCold(head);
     fireController.loop();
-  updatePoison(head);
-  strip.show();                     // Refresh strip
+    poisonController.loop();
+    strip.show();                     // Refresh strip
 
-  if(++head >= NUMPIXELS) head = 0;
+    if(++head >= NUMPIXELS) head = 0;
 }
 
 int fLightning = 0;
@@ -242,13 +246,6 @@ void updateCold(int pix) {
         strip.setPixelColor(i, coldColor);
       }
    }
-}
-
-int fPoison = 24;
-int ePoison = 29;
-void updatePoison(int pix) {
-   if (pix < fPoison || pix > ePoison) return;
-   strip.setPixelColor(pix, 0x0000FF);
 }
 
 void offLoop() {

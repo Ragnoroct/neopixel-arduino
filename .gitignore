@@ -2,3 +2,4 @@
 .vscode/
 main/libraries
 main/main.arduino.avr*
+output/
