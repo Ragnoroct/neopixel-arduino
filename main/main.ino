@@ -4,6 +4,7 @@
 #include "color_lib.h"
 #include "fire_controller.h"
 #include "poison_controller.h"
+#include "cold_controller.h"
 
 #define NUMPIXELS 30 // Number of LEDs in strip
 #define DATAPIN    3
@@ -43,10 +44,10 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_
 //Controllers
 FireController fireController = FireController(&strip);
 PoisonController poisonController = PoisonController(&strip);
+ColdController coldController = ColdController(&strip);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
-
 
 void setup() {
   strip.begin(); // Initialize pins for output
@@ -103,12 +104,10 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             break;
         //Cold
         case IR_1:
-            decreaseCold = !decreaseCold;
-            increaseCold = false;
+            coldController.setMode(0);
             break;
         case IR_2:
-            increaseCold = !increaseCold;
-            decreaseCold = false;
+            coldController.setMode(1);
             break;
         case IR_3:
             break;
@@ -139,7 +138,7 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
 void stripLoop() {
     updateLightning(head);
     updateHealth(head);
-    updateCold(head);
+    coldController.loop();
     fireController.loop();
     poisonController.loop();
     strip.show();                     // Refresh strip
@@ -214,38 +213,6 @@ void updateHealth(int pix) {
         }
         healthOn = !healthOn;
     }
-}
-
-int fCold = 12;
-int eCold = 17;
-int coldCounter = 0;
-uint32_t coldColor = strip.Color(17, 24, 24);//0x000000;
-int coldColorTrack = 0; // If you add 0x11 to 0xFF, you will overflow, in order to keep track of "steps" of brightness, this variable will go from 0-16. This is a strong case to use your color operation -Jonathan
-float coldStep = .0001;
-
-void updateCold(int pix) {
-   if (pix != fCold) return;
-   if (increaseCold) {
-      coldColorTrack += coldStep;
-      coldColor += coldStep * coldColor;
-      if (coldColorTrack > 16) {
-        coldColorTrack = 16;
-        coldColor = 0xA5F2F3;
-      }
-      for (int i = fCold; i <= eCold; i++) {
-        strip.setPixelColor(i, coldColor);
-      }
-   } else if (decreaseCold) {
-      coldColorTrack -= coldStep;
-      coldColor -= coldStep * coldColor;
-      if (coldColorTrack < 0) {
-        coldColorTrack = 0;
-        coldColor = 0x000000;
-      }
-      for (int i = fCold; i <= eCold; i++) {
-        strip.setPixelColor(i, coldColor);
-      }
-   }
 }
 
 void offLoop() {
