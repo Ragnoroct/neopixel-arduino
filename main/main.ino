@@ -5,6 +5,7 @@
 #include "fire_controller.h"
 #include "poison_controller.h"
 #include "cold_controller.h"
+#include "lightning_controller.h"
 
 #define NUMPIXELS 30 // Number of LEDs in strip
 #define DATAPIN    3
@@ -45,6 +46,7 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_
 FireController fireController = FireController(&strip);
 PoisonController poisonController = PoisonController(&strip);
 ColdController coldController = ColdController(&strip);
+LightningController lightningController = LightningController(&strip);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
@@ -88,10 +90,13 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             break;
         //Lightning
         case IR_VOLUME_MINUS:
+            lightningController.setMode(0);
             break;
         case IR_VOLUME_PLUS:
+            lightningController.setMode(1);
             break;
         case IR_EQ:
+            lightningController.setMode(2);
             break;
         //Health
         case IR_0:
@@ -136,7 +141,8 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
 
 
 void stripLoop() {
-    updateLightning(head);
+    // updateLightning(head);
+    lightningController.loop();
     updateHealth(head);
     coldController.loop();
     fireController.loop();
@@ -144,24 +150,6 @@ void stripLoop() {
     strip.show();                     // Refresh strip
 
     if(++head >= NUMPIXELS) head = 0;
-}
-
-int fLightning = 0;
-int eLightning = 5;
-int lightningCounter = 0;
-int lightningT = 10;
-void updateLightning(int pix) {
-   if (pix != fLightning) return;
-   if (++lightningCounter == lightningT) {
-      for (int i = fLightning; i <= eLightning; i++) {
-        strip.setPixelColor(i, 0x00FFFF);
-      }
-      lightningCounter = 0;
-   } else if (lightningCounter == lightningT/2) {
-      for (int i = fLightning; i <= eLightning; i++) {
-        strip.setPixelColor(i, 0);
-    }
-   }
 }
 
 int counterLastTime = 0;
