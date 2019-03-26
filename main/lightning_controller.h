@@ -4,8 +4,11 @@
 class LightningController {
     private:
         //Constants
-        const int LOWER_LIMIT = 0;
-        const int UPPER_LIMIT = 5;
+        const int FRONTMODULE_LOWER_LIMIT = 10;
+        const int FRONTMODULE_UPPER_LIMIT = 13;
+        const int BACKMODULE_LOWER_LIMIT = 39;
+        const int BACKMODULE_UPPER_LIMIT = 44;
+
         const float BRIGHTNESS_STEPS[8] = { 1, 0, .8, 0, .99, 0, .7, 0 };
         const uint32_t COLOR = 0x70DBDB;
         const int STEP_DURRATION = 10; //how many steps for change in animation
@@ -42,26 +45,20 @@ void LightningController::setMode(int mode)
 void LightningController::loop() {
     //mode off
     if (mode == 0) {
-        for (int i = LOWER_LIMIT; i <= UPPER_LIMIT; i++) {
-            strip->setPixelColor(i, 0);
-        }
+        setStripArrayColor(strip, 0x0, FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+        setStripArrayColor(strip, 0x0, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
     //mode less
     } else if (mode == 1) {
         //only step up in brightness to 9
         if (currentBrightnessIndex < 8) {
-            // int index = currentBrightnessIndex;
             float colorCoefficient = BRIGHTNESS_STEPS[currentBrightnessIndex];
-            // float extraCoefficient = BRIGHTNESS_STEPS[index + 1];   //between index and index + 1
-            // extraCoefficient = (extraCoefficient - colorCoefficient) * (currentStep / STEP_DURRATION);
-            // colorCoefficient += extraCoefficient;
             
             //Set color brightness
             CRGB color = COLOR;
             color %= (colorCoefficient * 255);
 
-            for (int i = LOWER_LIMIT; i <= UPPER_LIMIT; i++) {
-                strip->setPixelColor(i, rgbToHex(color));
-            }
+            setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
 
             currentStep++;
             if (currentStep > STEP_DURRATION) {
