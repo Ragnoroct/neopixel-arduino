@@ -4,8 +4,11 @@
 class FireController {
     private:
         Adafruit_DotStar* strip;
-        int fFire = 18;
-        int eFire = 23;
+        const int FRONTMODULE_LOWER_LIMIT = 14;
+        const int FRONTMODULE_UPPER_LIMIT = 17;
+        const int BACKMODULE_LOWER_LIMIT = 45;
+        const int BACKMODULE_UPPER_LIMIT = 49;
+
         float fireStep[10] = { .1, .2, .3, .4, .5, .6, 1 };
         uint32_t fireColor = 0xed310b;
         int fireDuration = 400; //how many steps for whole animation
@@ -39,9 +42,8 @@ void FireController::setMode(int mode)
 
 void FireController::loop() {
     if (fireMode == 0) {
-        for (int i = fFire; i <= eFire; i++) {
-            strip->setPixelColor(i, 0);
-        }
+        setStripArrayColor(strip, 0X0, FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+        setStripArrayColor(strip, 0X0, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
     } else if (fireMode == 1) {
         if (fireCurrentStep < fireDuration) {
             int stepCoefficientIndex = fireCurrentStep / fireStepsPerTransition;
@@ -50,9 +52,9 @@ void FireController::loop() {
             CRGB color = fireColor;
             color %= (colorCoefficient * 255);
 
-            for (int i = fFire; i <= eFire; i++) {
-                strip->setPixelColor(i, rgbToHex(color));
-            }
+            setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+
             fireCurrentStep++;
         } else {
             fireCurrentStep = 0;
@@ -65,9 +67,9 @@ void FireController::loop() {
             CRGB color = fireColor;
             color %= (colorCoefficient * 255);
 
-            for (int i = fFire; i <= eFire; i++) {
-                strip->setPixelColor(i, rgbToHex(color));
-            }
+            setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+
             fireCurrentStep--;
         } else {
             fireMode = 0;   //off
