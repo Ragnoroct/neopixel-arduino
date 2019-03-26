@@ -4,8 +4,11 @@
 class PoisonController {
     private:
         //Constants
-        const int LOWER_LIMIT = 24;
-        const int UPPER_LIMIT = 29;
+        const int FRONTMODULE_LOWER_LIMIT = 18;
+        const int FRONTMODULE_UPPER_LIMIT = 20;
+        const int BACKMODULE_LOWER_LIMIT = 50;
+        const int BACKMODULE_UPPER_LIMIT = 53;
+        
         const float BRIGHTNESS_STEPS[19] = { .1, .15, .2, .25, .3, .35, .4, .45, .5, .55, .6, .65, .7, .75, .8, .85, .9, .95, 1 };
         const uint32_t COLOR = 0x00330A;
         const int STEP_DURRATION = 50; //how many steps for whole animation
@@ -46,9 +49,8 @@ void PoisonController::setMode(int mode)
 void PoisonController::loop() {
     //mode off
     if (mode == 0) {
-        for (int i = LOWER_LIMIT; i <= UPPER_LIMIT; i++) {
-            strip->setPixelColor(i, 0);
-        }
+        setStripArrayColor(strip, 0x0, FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+        setStripArrayColor(strip, 0x0, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
     //mode less
     } else if (mode == 1) {
         //only step up in brightness to 9
@@ -63,9 +65,8 @@ void PoisonController::loop() {
             CRGB color = COLOR;
             color %= (colorCoefficient * 255);
 
-            for (int i = LOWER_LIMIT; i <= UPPER_LIMIT; i++) {
-                strip->setPixelColor(i, rgbToHex(color));
-            }
+            setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
 
             currentStep++;
             if (currentStep > STEP_DURRATION) {
