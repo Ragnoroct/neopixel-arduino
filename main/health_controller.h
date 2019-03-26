@@ -5,26 +5,22 @@ class HealthController {
     private:
         //Constants
         //Index definitions
-        int FRONTMODULE_LOWER_INDEX = 0;
-        int FRONTMODULE_UPPER_INDEX = 4;
-        int BACKMODULE_UPPER_INDEX = 30;
-        int BACKMODULE_LOWER_INDEX = 21;
+        const int FRONTMODULE_LOWER_INDEX = 0;
+        const int FRONTMODULE_UPPER_INDEX = 4;
+        const int BACKMODULE_UPPER_INDEX = 30;
+        const int BACKMODULE_LOWER_INDEX = 21;
+        const uint32_t HEALTH_COLOR = 0xFF0000;
+        const int MODE_0_TICK_TIMEOUT = 10;
+        const int MODE_1_TICK_TIMEOUT = 150;
+        const int MODE_2_TICK_TIMEOUT = 25;
         
         int healthCurrentPixel = FRONTMODULE_LOWER_INDEX;
         int backHealthCurrentPixel = BACKMODULE_LOWER_INDEX;
         int healthCounter = 0;
         int healthOn = true;
-        const uint32_t HEALTH_COLOR = 0xFF0000;
-        
-        const int LOWER_LIMIT = 12;
-        const int UPPER_LIMIT = 17;
-        const float BRIGHTNESS_STEPS[19] = { .1, .15, .2, .25, .3, .35, .4, .45, .5, .55, .6, .65, .7, .75, .8, .85, .9, .95, 1 };
-        const uint32_t COLOR = 0x70DBDB;
-        const int STEP_DURRATION = 50; //how many steps for whole animation
         
         Adafruit_DotStar* strip;
-        int currentStep = 0;
-        int currentBrightnessIndex = 0;
+        int ticksTimout = MODE_0_TICK_TIMEOUT;
         int mode = 0;
     public:
         HealthController(Adafruit_DotStar*);
@@ -34,7 +30,7 @@ class HealthController {
 
 HealthController::HealthController(Adafruit_DotStar* injectedStrip) 
 { 
-    strip = injectedStrip; 
+    strip = injectedStrip;
 }
 
 //Modes:
@@ -44,14 +40,15 @@ HealthController::HealthController(Adafruit_DotStar* injectedStrip)
 void HealthController::setMode(int mode)
 {
     this->mode = mode;
-    //less
-    if (mode == 1) {
-        currentStep = 0;    //reset to 0
-        currentBrightnessIndex = 0;
-    //more
+    if (mode == 0) {
+        ticksTimout = MODE_0_TICK_TIMEOUT;
+        healthCounter = ticksTimout + 1;
+    } else if (mode == 1) {
+        ticksTimout = MODE_1_TICK_TIMEOUT;
+        healthCounter = ticksTimout + 1;
     } else if (mode == 2) {
-        currentStep = 0;
-        currentBrightnessIndex = 9; //start halfway
+        ticksTimout = MODE_2_TICK_TIMEOUT;
+        healthCounter = ticksTimout + 1;
     }
 }
 
@@ -60,15 +57,16 @@ void HealthController::loop() {
     int backTail = 0;
     uint32_t color;
 
-    //Normal pulsing mode (0)
-    if (mode == 0) {
-        if (counter(healthCounter, 10) == false) return;
+    //Normal pulsing mode (0|1)
+    if (mode == 0 || mode == 1) {
+        if (counter(healthCounter, ticksTimout) == false) return;
 
         //front
         if (healthCurrentPixel == FRONTMODULE_LOWER_INDEX)
             tail = FRONTMODULE_UPPER_INDEX;
         else
             tail = healthCurrentPixel - 1;
+        //back
         if (backHealthCurrentPixel == BACKMODULE_LOWER_INDEX)
             backTail = FRONTMODULE_UPPER_INDEX;
         else
@@ -82,15 +80,17 @@ void HealthController::loop() {
         strip->setPixelColor(backTail, 0);   //turn last pixel off 
         strip->setPixelColor(backHealthCurrentPixel, HEALTH_COLOR);
         
+        //front
         healthCurrentPixel++;
         if (healthCurrentPixel > FRONTMODULE_UPPER_INDEX)
             healthCurrentPixel = FRONTMODULE_LOWER_INDEX;
+        //back
         backHealthCurrentPixel++;
         if (backHealthCurrentPixel > BACKMODULE_UPPER_INDEX)
             backHealthCurrentPixel = BACKMODULE_LOWER_INDEX;
-    //Flashing mode (1)
+    //Flashing mode (2)
     } else {
-        if (counter(healthCounter, 25) == false) return;
+        if (counter(healthCounter, ticksTimout) == false) return;
         uint32_t color = healthOn ? HEALTH_COLOR : 0;
         //Front module
         for (int i = FRONTMODULE_LOWER_INDEX; i <= FRONTMODULE_UPPER_INDEX; i++) {
