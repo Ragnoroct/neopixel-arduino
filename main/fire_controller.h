@@ -60,19 +60,7 @@ void FireController::loop() {
             fireCurrentStep = 0;
         }
     } else if (fireMode == 2) {
-        if (fireCurrentStep < 0) {
-            int stepCoefficientIndex = fireCurrentStep / fireStepsPerTransition;
-            float colorCoefficient = fireStep[stepCoefficientIndex] + (.01 * (fireCurrentStep % fireStepsPerTransition));
-
-            CRGB color = fireColor;
-            color %= (colorCoefficient * 255);
-
-            setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
-            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
-
-            fireCurrentStep--;
-        } else {
-            fireMode = 0;   //off
-        }
+        setStripArrayColor(strip, fireColor, FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
+        setStripArrayColor(strip, fireColor, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
     }
 }
