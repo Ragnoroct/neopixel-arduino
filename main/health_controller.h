@@ -4,9 +4,14 @@
 class HealthController {
     private:
         //Constants
-        int fHealth = 6;
-        int eHealth = 11;
-        int healthCurrentPixel = 0;
+        //Index definitions
+        int FRONTMODULE_LOWER_INDEX = 0;
+        int FRONTMODULE_UPPER_INDEX = 4;
+        int BACKMODULE_UPPER_INDEX = 30;
+        int BACKMODULE_LOWER_INDEX = 21;
+        
+        int healthCurrentPixel = FRONTMODULE_LOWER_INDEX;
+        int backHealthCurrentPixel = BACKMODULE_LOWER_INDEX;
         int healthCounter = 0;
         int healthOn = true;
         const uint32_t HEALTH_COLOR = 0xFF0000;
@@ -52,27 +57,47 @@ void HealthController::setMode(int mode)
 
 void HealthController::loop() {
     int tail = 0;
+    int backTail = 0;
     uint32_t color;
 
     //Normal pulsing mode (0)
     if (mode == 0) {
         if (counter(healthCounter, 10) == false) return;
 
-        if (healthCurrentPixel == fHealth)
-            tail = eHealth;
+        //front
+        if (healthCurrentPixel == FRONTMODULE_LOWER_INDEX)
+            tail = FRONTMODULE_UPPER_INDEX;
         else
             tail = healthCurrentPixel - 1;
+        if (backHealthCurrentPixel == BACKMODULE_LOWER_INDEX)
+            backTail = FRONTMODULE_UPPER_INDEX;
+        else
+            backTail = backHealthCurrentPixel - 1;
 
-        strip->setPixelColor(tail, 0);   //turn last pixel off
+        //Set front module pixels
+        strip->setPixelColor(tail, 0);   //turn last pixel off 
         strip->setPixelColor(healthCurrentPixel, HEALTH_COLOR);
+
+        //Set back module pixels
+        strip->setPixelColor(backTail, 0);   //turn last pixel off 
+        strip->setPixelColor(backHealthCurrentPixel, HEALTH_COLOR);
+        
         healthCurrentPixel++;
-        if (healthCurrentPixel > eHealth)
-            healthCurrentPixel = fHealth;
+        if (healthCurrentPixel > FRONTMODULE_UPPER_INDEX)
+            healthCurrentPixel = FRONTMODULE_LOWER_INDEX;
+        backHealthCurrentPixel++;
+        if (backHealthCurrentPixel > BACKMODULE_UPPER_INDEX)
+            backHealthCurrentPixel = BACKMODULE_LOWER_INDEX;
     //Flashing mode (1)
     } else {
         if (counter(healthCounter, 25) == false) return;
         uint32_t color = healthOn ? HEALTH_COLOR : 0;
-        for (int i = fHealth; i <= eHealth; i++) {
+        //Front module
+        for (int i = FRONTMODULE_LOWER_INDEX; i <= FRONTMODULE_UPPER_INDEX; i++) {
+            strip->setPixelColor(i, color);
+        }
+        //Back module
+        for (int i = BACKMODULE_LOWER_INDEX; i <= BACKMODULE_UPPER_INDEX; i++) {
             strip->setPixelColor(i, color);
         }
         healthOn = !healthOn;
