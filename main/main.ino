@@ -99,12 +99,13 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             break;
         //Health
         case IR_0:
-            healthMode = 0;
+            healthController.setMode(0);
             break;
         case IR_100_PLUS:
-            healthMode = 1;
+            healthController.setMode(1);
             break;
         case IR_200_PLUS:
+            healthController.setMode(2);
             break;
         //Cold
         case IR_1:
