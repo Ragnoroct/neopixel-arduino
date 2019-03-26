@@ -9,8 +9,9 @@ class LightningController {
         const int BACKMODULE_LOWER_LIMIT = 39;
         const int BACKMODULE_UPPER_LIMIT = 44;
 
-        const float BRIGHTNESS_STEPS[8] = { 1, 0, .8, 0, .99, 0, .7, 0 };
-        const uint32_t COLOR = 0x70DBDB;
+        const int STEPS_NUM = 15;
+        const float BRIGHTNESS_STEPS[STEPS_NUM] = { 1, 0, 1, 0, 1, 0, 0, 0, .8, 0, .99, 0, 0, .7, 0 };
+        const uint32_t COLOR = 0x720485;
         const int STEP_DURRATION = 10; //how many steps for change in animation
         
         Adafruit_DotStar* strip;
@@ -50,7 +51,7 @@ void LightningController::loop() {
     //mode less
     } else if (mode == 1) {
         //only step up in brightness to 9
-        if (currentBrightnessIndex < 8) {
+        if (currentBrightnessIndex < STEPS_NUM) {
             float colorCoefficient = BRIGHTNESS_STEPS[currentBrightnessIndex];
             
             //Set color brightness
@@ -72,21 +73,3 @@ void LightningController::loop() {
         }
     }
 }
-
-// int fLightning = 0;
-// int eLightning = 5;
-// int lightningCounter = 0;
-// int lightningT = 10;
-// void updateLightning(int pix) {
-//    if (pix != fLightning) return;
-//    if (++lightningCounter == lightningT) {
-//       for (int i = fLightning; i <= eLightning; i++) {
-//         strip.setPixelColor(i, 0x00FFFF);
-//       }
-//       lightningCounter = 0;
-//    } else if (lightningCounter == lightningT/2) {
-//       for (int i = fLightning; i <= eLightning; i++) {
-//         strip.setPixelColor(i, 0);
-//     }
-//    }
-// }
