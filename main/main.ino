@@ -6,10 +6,11 @@
 #include "poison_controller.h"
 #include "cold_controller.h"
 #include "lightning_controller.h"
+#include "health_controller.h"
 
-#define NUMPIXELS 30 // Number of LEDs in strip
-#define DATAPIN    3
-#define CLOCKPIN   2
+#define NUMPIXELS 54 // Number of LEDs in strip
+#define DATAPIN    11
+#define CLOCKPIN   13
 #define PLAY_PAUSE FFC23D
 
 int IR_Pin = A0;
@@ -47,6 +48,7 @@ FireController fireController = FireController(&strip);
 PoisonController poisonController = PoisonController(&strip);
 ColdController coldController = ColdController(&strip);
 LightningController lightningController = LightningController(&strip);
+HealthController healthController = HealthController(&strip);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
@@ -65,11 +67,8 @@ void setup() {
 int healthMode = 0;
 int fireMode = 0;
 
-int head  = 0;
 int remoteAction = 0;
 bool isPaused = 0;
-bool increaseCold = false;
-bool decreaseCold = false;
 
 void translateIR(int * remoteAction) // takes action based on IR code received describing Car MP3 IR codes 
 {
@@ -143,64 +142,12 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
 void stripLoop() {
     // updateLightning(head);
     lightningController.loop();
-    updateHealth(head);
+    healthController.loop();
     coldController.loop();
     fireController.loop();
     poisonController.loop();
-    strip.show();                     // Refresh strip
-
-    if(++head >= NUMPIXELS) head = 0;
-}
-
-int counterLastTime = 0;
-bool counter(int &counter, int timeout)
-{
-    counter++;
-    if (counter > timeout) {
-        counter = 0;
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
-int fHealth = 6;
-int eHealth = 11;
-int healthCurrentPixel = 0;
-int healthCounter = 0;
-int healthOn = true;
-const uint32_t HEALTH_COLOR = strip.Color(255, 0, 0);
-//Modes:
-//0. back and forth
-//1. flashing
-void updateHealth(int pix) {
-    int tail = 0;
-    uint32_t color;
-
-    //Normal pulsing mode (0)
-    if (healthMode == 0) {
-        if (counter(healthCounter, 10) == false) return;
-
-        if (healthCurrentPixel == fHealth)
-            tail = eHealth;
-        else
-            tail = healthCurrentPixel - 1;
-
-        strip.setPixelColor(tail, 0);   //turn last pixel off
-        strip.setPixelColor(healthCurrentPixel, HEALTH_COLOR);
-        healthCurrentPixel++;
-        if (healthCurrentPixel > eHealth)
-            healthCurrentPixel = fHealth;
-    //Flashing mode (1)
-    } else {
-        if (counter(healthCounter, 25) == false) return;
-        uint32_t color = healthOn ? HEALTH_COLOR : 0;
-        for (int i = fHealth; i <= eHealth; i++) {
-            strip.setPixelColor(i, color);
-        }
-        healthOn = !healthOn;
-    }
+    // Refresh strip
+    strip.show();                    
 }
 
 void offLoop() {

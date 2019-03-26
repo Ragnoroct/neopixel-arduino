@@ -18,6 +18,17 @@
 //     return strip.Color(r, b, g);
 // }
 
+bool counter(int &counter, int timeout)
+{
+    counter++;
+    if (counter > timeout) {
+        counter = 0;
+        return true;
+    } else {
+        return false;
+    }
+}
+
 uint32_t rgbToHex(CRGB color)
 {
     uint32_t r = color.r;
