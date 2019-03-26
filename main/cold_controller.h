@@ -4,8 +4,11 @@
 class ColdController {
     private:
         //Constants
-        const int LOWER_LIMIT = 12;
-        const int UPPER_LIMIT = 17;
+        const int BACKMODULE_UPPER_INDEX = 31;
+        const int BACKMODULE_LOWER_INDEX = 38;
+        const int FRONTMODULE_LOWER_INDEX = 5;
+        const int FRONTMODULE_UPPER_INDEX = 9;
+
         const float BRIGHTNESS_STEPS[19] = { .1, .15, .2, .25, .3, .35, .4, .45, .5, .55, .6, .65, .7, .75, .8, .85, .9, .95, 1 };
         const uint32_t COLOR = 0x70DBDB;
         const int STEP_DURRATION = 50; //how many steps for whole animation
@@ -46,9 +49,8 @@ void ColdController::setMode(int mode)
 void ColdController::loop() {
     //mode off
     if (mode == 0) {
-        for (int i = LOWER_LIMIT; i <= UPPER_LIMIT; i++) {
-            strip->setPixelColor(i, 0);
-        }
+        setStripArrayColor(strip, 0x0, FRONTMODULE_LOWER_INDEX, FRONTMODULE_UPPER_INDEX);   //front
+        setStripArrayColor(strip, 0x0, BACKMODULE_LOWER_INDEX, BACKMODULE_UPPER_INDEX);     //back
     //mode less
     } else if (mode == 1) {
         //only step up in brightness to 9
@@ -63,9 +65,8 @@ void ColdController::loop() {
             CRGB color = COLOR;
             color %= (colorCoefficient * 255);
 
-            for (int i = LOWER_LIMIT; i <= UPPER_LIMIT; i++) {
-                strip->setPixelColor(i, rgbToHex(color));
-            }
+            setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_INDEX, FRONTMODULE_UPPER_INDEX);
+            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_INDEX, BACKMODULE_UPPER_INDEX);
 
             currentStep++;
             if (currentStep > STEP_DURRATION) {
@@ -75,35 +76,3 @@ void ColdController::loop() {
         }
     }
 }
-
-// int fCold = 12;
-// int eCold = 17;
-// int coldCounter = 0;
-// uint32_t coldColor = strip.Color(17, 24, 24);//0x000000;
-// int coldColorTrack = 0; // If you add 0x11 to 0xFF, you will overflow, in order to keep track of "steps" of brightness, this variable will go from 0-16. This is a strong case to use your color operation -Jonathan
-// float coldStep = .0001;
-
-// void updateCold(int pix) {
-//    if (pix != fCold) return;
-//    if (increaseCold) {
-//       coldColorTrack += coldStep;
-//       coldColor += coldStep * coldColor;
-//       if (coldColorTrack > 16) {
-//         coldColorTrack = 16;
-//         coldColor = 0xA5F2F3;
-//       }
-//       for (int i = fCold; i <= eCold; i++) {
-//         strip.setPixelColor(i, coldColor);
-//       }
-//    } else if (decreaseCold) {
-//       coldColorTrack -= coldStep;
-//       coldColor -= coldStep * coldColor;
-//       if (coldColorTrack < 0) {
-//         coldColorTrack = 0;
-//         coldColor = 0x000000;
-//       }
-//       for (int i = fCold; i <= eCold; i++) {
-//         strip.setPixelColor(i, coldColor);
-//       }
-//    }
-// }
