@@ -9,7 +9,7 @@ class LightningController {
         const int BACKMODULE_LOWER_LIMIT = 39;
         const int BACKMODULE_UPPER_LIMIT = 44;
 
-        const int STEPS_NUM = 15;
+        static const int STEPS_NUM = 15;
         const float BRIGHTNESS_STEPS[STEPS_NUM] = { 1, 0, 1, 0, 1, 0, 0, 0, .8, 0, .99, 0, 0, .7, 0 };
         const uint32_t COLOR = 0x720485;
         const int STEP_DURRATION = 10; //how many steps for change in animation
