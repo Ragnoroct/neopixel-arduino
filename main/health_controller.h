@@ -20,17 +20,19 @@ class HealthController {
         int healthOn = true;
         
         Adafruit_DotStar* strip;
+        Adafruit_DotStar* stripBack;
         int ticksTimout = MODE_0_TICK_TIMEOUT;
         int mode = 0;
     public:
-        HealthController(Adafruit_DotStar*);
+        HealthController(Adafruit_DotStar*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-HealthController::HealthController(Adafruit_DotStar* injectedStrip) 
+HealthController::HealthController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip;
+    stripBack = injectedStripBack;
 }
 
 //Modes:

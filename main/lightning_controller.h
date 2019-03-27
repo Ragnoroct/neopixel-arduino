@@ -15,18 +15,20 @@ class LightningController {
         const int STEP_DURRATION = 10; //how many steps for change in animation
         
         Adafruit_DotStar* strip;
+        Adafruit_DotStar* stripBack;
         int currentStep = 0;
         int currentBrightnessIndex = 0;
         int mode = 0;
     public:
-        LightningController(Adafruit_DotStar*);
+        LightningController(Adafruit_DotStar*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-LightningController::LightningController(Adafruit_DotStar* injectedStrip) 
+LightningController::LightningController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip; 
+    stripBack = injectedStripBack;
 }
 
 //Modes:

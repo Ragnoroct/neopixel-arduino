@@ -4,6 +4,7 @@
 class FireController {
     private:
         Adafruit_DotStar* strip;
+        Adafruit_DotStar* stripBack;
         const int FRONTMODULE_LOWER_LIMIT = 14;
         const int FRONTMODULE_UPPER_LIMIT = 17;
         const int BACKMODULE_LOWER_LIMIT = 45;
@@ -16,14 +17,15 @@ class FireController {
         int fireCurrentStep = 0;
     public:
         int fireMode = 0;
-        FireController(Adafruit_DotStar*);
+        FireController(Adafruit_DotStar*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-FireController::FireController(Adafruit_DotStar* injectedStrip) 
+FireController::FireController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
-    strip = injectedStrip; 
+    strip = injectedStrip;
+    stripBack = injectedStripBack;
 }
 
 //Modes:

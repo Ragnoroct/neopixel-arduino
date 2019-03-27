@@ -8,9 +8,10 @@
 #include "lightning_controller.h"
 #include "health_controller.h"
 
-#define NUMPIXELS 54 // Number of LEDs in strip
-#define DATAPIN    11
-#define CLOCKPIN   13
+#define NUMPIXELS_FRONT 21 // Number of LEDs in strip
+#define NUMPIXELS_BACK 33 // Number of LEDs in strip
+#define DATAPIN    2
+#define CLOCKPIN   3
 #define PLAY_PAUSE FFC23D
 
 int IR_Pin = A0;
@@ -41,14 +42,15 @@ int RED_LED = 12;
 #define IR_8 0xFF4AB5  
 #define IR_9 0xFF52AD  
 
-Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
+Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
+Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, DOTSTAR_BGR);
 
 //Controllers
-FireController fireController = FireController(&strip);
-PoisonController poisonController = PoisonController(&strip);
-ColdController coldController = ColdController(&strip);
-LightningController lightningController = LightningController(&strip);
-HealthController healthController = HealthController(&strip);
+FireController fireController = FireController(&strip, &backStrip);
+PoisonController poisonController = PoisonController(&strip, &backStrip);
+ColdController coldController = ColdController(&strip, &backStrip);
+LightningController lightningController = LightningController(&strip, &backStrip);
+HealthController healthController = HealthController(&strip, &backStrip);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
@@ -152,10 +154,10 @@ void stripLoop() {
 }
 
 void offLoop() {
-  for (int i = 0; i < NUMPIXELS; i++) {
-    strip.setPixelColor(i, 0x0);
-  }
-  strip.show();
+//   for (int i = 0; i < NUMPIXELS; i++) {
+//     strip.setPixelColor(i, 0x0);
+//   }
+//   strip.show();
 }
 
 void loop() {
@@ -165,9 +167,9 @@ void loop() {
      irrecv.resume(); // Receive the next value
    }
 
-   if (isPaused) {
-    offLoop();
-    return;
-   }
+//    if (isPaused) {
+//     offLoop();
+//     return;
+//    }
   stripLoop();
 }

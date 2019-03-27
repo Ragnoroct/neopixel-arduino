@@ -15,17 +15,19 @@ class PoisonController {
         const double MIN_BRIGHTNESS = 0.0;
         
         Adafruit_DotStar* strip;
+        Adafruit_DotStar* stripBack;
         double currentBrightness = 0.0;
         int mode = 0;
     public:
-        PoisonController(Adafruit_DotStar*);
+        PoisonController(Adafruit_DotStar*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-PoisonController::PoisonController(Adafruit_DotStar* injectedStrip) 
+PoisonController::PoisonController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip; 
+    stripBack = injectedStripBack;
 }
 
 //Modes:

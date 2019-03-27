@@ -15,16 +15,18 @@ class ColdController {
         const double MIN_BRIGHTNESS = 0.0;
         
         Adafruit_DotStar* strip;
+        Adafruit_DotStar* stripBack;
         double currentBrightness = 0.0;
     public:
-        ColdController(Adafruit_DotStar*);
+        ColdController(Adafruit_DotStar*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-ColdController::ColdController(Adafruit_DotStar* injectedStrip) 
+ColdController::ColdController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip; 
+    stripBack = injectedStripBack;
 }
 
 //Modes:
