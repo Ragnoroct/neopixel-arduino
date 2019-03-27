@@ -5,10 +5,10 @@ class HealthController {
     private:
         //Constants
         //Index definitions
-        const int FRONTMODULE_LOWER_INDEX = 0;
-        const int FRONTMODULE_UPPER_INDEX = 4;
-        const int BACKMODULE_UPPER_INDEX = 30;
-        const int BACKMODULE_LOWER_INDEX = 21;
+        const int FRONTMODULE_LOWER_INDEX = 16;
+        const int FRONTMODULE_UPPER_INDEX = 20;
+        const int BACKMODULE_LOWER_INDEX = 0;
+        const int BACKMODULE_UPPER_INDEX = 9;
         const uint32_t HEALTH_COLOR = 0xFF0000;
         const int MODE_0_TICK_TIMEOUT = 10;
         const int MODE_1_TICK_TIMEOUT = 150;
@@ -79,8 +79,8 @@ void HealthController::loop() {
         strip->setPixelColor(healthCurrentPixel, HEALTH_COLOR);
 
         //Set back module pixels
-        strip->setPixelColor(backTail, 0);   //turn last pixel off 
-        strip->setPixelColor(backHealthCurrentPixel, HEALTH_COLOR);
+        stripBack->setPixelColor(backTail, 0);   //turn last pixel off 
+        stripBack->setPixelColor(backHealthCurrentPixel, HEALTH_COLOR);
         
         //front
         healthCurrentPixel++;
@@ -100,7 +100,7 @@ void HealthController::loop() {
         }
         //Back module
         for (int i = BACKMODULE_LOWER_INDEX; i <= BACKMODULE_UPPER_INDEX; i++) {
-            strip->setPixelColor(i, color);
+            stripBack->setPixelColor(i, color);
         }
         healthOn = !healthOn;
     }

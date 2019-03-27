@@ -10,8 +10,8 @@
 
 #define NUMPIXELS_FRONT 21 // Number of LEDs in strip
 #define NUMPIXELS_BACK 33 // Number of LEDs in strip
-#define DATAPIN    2
-#define CLOCKPIN   3
+#define DATAPIN    13
+#define CLOCKPIN   11
 #define PLAY_PAUSE FFC23D
 
 int IR_Pin = A0;
@@ -42,8 +42,8 @@ int RED_LED = 12;
 #define IR_8 0xFF4AB5  
 #define IR_9 0xFF52AD  
 
-Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
-Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, DOTSTAR_BGR);
+Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, 2, 3, DOTSTAR_BGR);
+Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, 13, 11, DOTSTAR_BGR);    //uses SPI 11data, 13clock
 
 //Controllers
 FireController fireController = FireController(&strip, &backStrip);
@@ -56,6 +56,8 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 
 void setup() {
+  backStrip.begin();
+  backStrip.show();
   strip.begin(); // Initialize pins for output
   strip.show();  // Turn all LEDs off ASAP
   pinMode(RECV_PIN, INPUT);  
@@ -143,13 +145,13 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
 
 
 void stripLoop() {
-    // updateLightning(head);
     lightningController.loop();
     healthController.loop();
     coldController.loop();
     fireController.loop();
     poisonController.loop();
-    // Refresh strip
+    // Refresh strips
+    backStrip.show();
     strip.show();                    
 }
 

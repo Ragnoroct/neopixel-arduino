@@ -4,10 +4,10 @@
 class PoisonController {
     private:
         //Constants
-        const int FRONTMODULE_LOWER_LIMIT = 18;
-        const int FRONTMODULE_UPPER_LIMIT = 20;
-        const int BACKMODULE_LOWER_LIMIT = 50;
-        const int BACKMODULE_UPPER_LIMIT = 53;
+        const int FRONTMODULE_LOWER_LIMIT = 0;
+        const int FRONTMODULE_UPPER_LIMIT = 2;
+        const int BACKMODULE_LOWER_LIMIT = 29;
+        const int BACKMODULE_UPPER_LIMIT = 32;
         
         const uint32_t COLOR = 0x00330A;
         const double ONE_BRIGHTNESS_STEP = .003;    //speed at which the controller changes the brightness
@@ -63,5 +63,5 @@ void PoisonController::loop() {
     }
 
     setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
-    setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+    setStripArrayColor(stripBack, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
 }

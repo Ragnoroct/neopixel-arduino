@@ -5,10 +5,10 @@ class FireController {
     private:
         Adafruit_DotStar* strip;
         Adafruit_DotStar* stripBack;
-        const int FRONTMODULE_LOWER_LIMIT = 14;
-        const int FRONTMODULE_UPPER_LIMIT = 17;
-        const int BACKMODULE_LOWER_LIMIT = 45;
-        const int BACKMODULE_UPPER_LIMIT = 49;
+        const int FRONTMODULE_LOWER_LIMIT = 3;
+        const int FRONTMODULE_UPPER_LIMIT = 6;
+        const int BACKMODULE_LOWER_LIMIT = 24;
+        const int BACKMODULE_UPPER_LIMIT = 28;
 
         float fireStep[10] = { .1, .2, .3, .4, .5, .6, 1 };
         uint32_t fireColor = 0xed310b;
@@ -63,6 +63,6 @@ void FireController::loop() {
         }
     } else if (fireMode == 2) {
         setStripArrayColor(strip, fireColor, FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
-        setStripArrayColor(strip, fireColor, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+        setStripArrayColor(stripBack, fireColor, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
     }
 }

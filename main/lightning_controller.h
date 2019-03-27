@@ -4,10 +4,10 @@
 class LightningController {
     private:
         //Constants
-        const int FRONTMODULE_LOWER_LIMIT = 10;
-        const int FRONTMODULE_UPPER_LIMIT = 13;
-        const int BACKMODULE_LOWER_LIMIT = 39;
-        const int BACKMODULE_UPPER_LIMIT = 44;
+        const int FRONTMODULE_LOWER_LIMIT = 7;
+        const int FRONTMODULE_UPPER_LIMIT = 10;
+        const int BACKMODULE_LOWER_LIMIT = 18;
+        const int BACKMODULE_UPPER_LIMIT = 23;
 
         static const int STEPS_NUM = 15;
         const float BRIGHTNESS_STEPS[STEPS_NUM] = { 1, 0, 1, 0, 1, 0, 0, 0, .8, 0, .99, 0, 0, .7, 0 };
@@ -49,7 +49,7 @@ void LightningController::loop() {
     //mode off
     if (mode == 0) {
         setStripArrayColor(strip, 0x0, FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
-        setStripArrayColor(strip, 0x0, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+        setStripArrayColor(stripBack, 0x0, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
     //mode less
     } else if (mode == 1) {
         //only step up in brightness to 9
@@ -61,7 +61,7 @@ void LightningController::loop() {
             color %= (colorCoefficient * 255);
 
             setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
-            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+            setStripArrayColor(stripBack, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
 
             currentStep++;
             if (currentStep > STEP_DURRATION) {
