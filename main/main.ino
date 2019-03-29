@@ -43,7 +43,7 @@ int RED_LED = 12;
 #define IR_9 0xFF52AD  
 
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, 2, 3, DOTSTAR_BGR);
-Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, 13, 11, DOTSTAR_BGR);    //uses SPI 11data, 13clock
+Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, DOTSTAR_BGR);
 
 //Controllers
 FireController fireController = FireController(&strip, &backStrip);
@@ -150,6 +150,14 @@ void stripLoop() {
     coldController.loop();
     fireController.loop();
     poisonController.loop();
+
+
+    for (int i = 0; i < NUMPIXELS_FRONT; i++) {
+        strip.setPixelColor(i, 0x010000);
+    }
+    for (int i = 0; i < NUMPIXELS_BACK; i++) {
+        backStrip.setPixelColor(i, 0x010000);
+    }
     // Refresh strips
     backStrip.show();
     strip.show();                    
