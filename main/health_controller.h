@@ -10,10 +10,10 @@ class HealthController {
         const int BACKMODULE_LOWER_INDEX = 23;
         const int BACKMODULE_UPPER_INDEX = 32;
         const uint32_t HEALTH_COLOR = 0xFF0000;
-        const int MODE_0_TICK_TIMEOUT = 10;
-        const int MODE_1_TICK_TIMEOUT = 150;
+        const int MODE_0_TICK_TIMEOUT = 25; //normal (slow)
+        const int MODE_1_TICK_TIMEOUT = 10; //faster
         const int MODE_2_TICK_TIMEOUT = 25;
-        const int TICK_TIMEOUT_MODIFIER = 3;    //n times as long between switches
+        const int TICK_TIMEOUT_MODIFIER = 2.5;    //n times as long between switches
         
         int healthCurrentPixel = FRONTMODULE_LOWER_INDEX;
         int backHealthCurrentPixel = BACKMODULE_LOWER_INDEX;
@@ -66,37 +66,40 @@ void HealthController::runLoop(Adafruit_DotStar* strip, int &currentPixel, int &
     int tail;
 
     //Normal pulsing mode (0|1)
-    if (mode == 0 || mode == 1) {
-        if (counter(healthCounter, ticksTimout) == false) return;
+    if (counter(healthCounter, ticksTimout) == false) return;
 
-        //front
-        if (currentPixel == lowerIndex)
-            tail = upperIndex;
-        else
-            tail = currentPixel - 1;
+    //front
+    if (currentPixel == lowerIndex)
+        tail = upperIndex;
+    else
+        tail = currentPixel - 1;
 
-        Serial.println(currentPixel);
-        
-        //Set front module pixels
-        strip->setPixelColor(tail, 0);   //turn last pixel off 
-        strip->setPixelColor(currentPixel, HEALTH_COLOR);
+    Serial.println(currentPixel);
+    
+    //Set front module pixels
+    strip->setPixelColor(tail, 0);   //turn last pixel off 
+    strip->setPixelColor(currentPixel, HEALTH_COLOR);
 
-        currentPixel++;
-        if (currentPixel > upperIndex)
-            currentPixel = lowerIndex;
+    currentPixel++;
+    if (currentPixel > upperIndex)
+        currentPixel = lowerIndex;
+}
+
+void HealthController::loop() {
+    if (mode != 2) {
+        runLoop(strip, healthCurrentPixel, healthCounter, ticksTimout, FRONTMODULE_UPPER_INDEX, FRONTMODULE_LOWER_INDEX);
+        runLoop(stripBack, backHealthCurrentPixel, backHealthCounter, ticksTimoutBack, BACKMODULE_UPPER_INDEX, BACKMODULE_LOWER_INDEX);
     //Flashing mode (2)
     } else {
         if (counter(healthCounter, ticksTimout) == false) return;
         uint32_t color = healthOn ? HEALTH_COLOR : 0;
 
-        for (int i = lowerIndex; i <= upperIndex; i++) {
+        for (int i = FRONTMODULE_LOWER_INDEX; i <= FRONTMODULE_UPPER_INDEX; i++) {
             strip->setPixelColor(i, color);
+        }
+        for (int i = BACKMODULE_LOWER_INDEX; i <= BACKMODULE_UPPER_INDEX; i++) {
+            stripBack->setPixelColor(i, color);
         }
         healthOn = !healthOn;
     }
-}
-
-void HealthController::loop() {
-    runLoop(strip, healthCurrentPixel, healthCounter, ticksTimout, FRONTMODULE_UPPER_INDEX, FRONTMODULE_LOWER_INDEX);
-    runLoop(stripBack, backHealthCurrentPixel, backHealthCounter, ticksTimoutBack, BACKMODULE_UPPER_INDEX, BACKMODULE_LOWER_INDEX);
 }
