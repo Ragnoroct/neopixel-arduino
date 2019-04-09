@@ -41,6 +41,7 @@ int RED_LED = 12;
 #define IR_7 0xFF42BD  
 #define IR_8 0xFF4AB5  
 #define IR_9 0xFF52AD  
+#define IR_REPEAT 0xFFFFFFFF
 
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, 2, 3, DOTSTAR_BGR);
 Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, DOTSTAR_BGR);
@@ -54,6 +55,7 @@ HealthController healthController = HealthController(&strip, &backStrip);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
+uint32_t lastIRValue;
 
 void setup() {
   backStrip.begin();
@@ -76,6 +78,12 @@ bool isPaused = 0;
 
 void translateIR(int * remoteAction) // takes action based on IR code received describing Car MP3 IR codes 
 {
+    if (results.value == IR_REPEAT) {
+        results.value = lastIRValue;
+    } else {
+        lastIRValue = results.value;
+    }
+
     switch(results.value) {
         case IR_CHANNEL_MINUS:
             break;

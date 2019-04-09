@@ -10,7 +10,7 @@ class PoisonController {
         const int BACKMODULE_UPPER_LIMIT = 3;
         
         const uint32_t COLOR = 0x00330A;
-        const double ONE_BRIGHTNESS_STEP = .003;    //speed at which the controller changes the brightness
+        const double ONE_BRIGHTNESS_STEP = .009;    //speed at which the controller changes the brightness
         const double MAX_BRIGHTNESS = 1.0;
         const double MIN_BRIGHTNESS = 0.0;
         

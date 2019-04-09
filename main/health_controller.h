@@ -74,8 +74,6 @@ void HealthController::runLoop(Adafruit_DotStar* strip, int &currentPixel, int &
     else
         tail = currentPixel - 1;
 
-    Serial.println(currentPixel);
-    
     //Set front module pixels
     strip->setPixelColor(tail, 0);   //turn last pixel off 
     strip->setPixelColor(currentPixel, HEALTH_COLOR);
