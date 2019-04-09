@@ -127,6 +127,7 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             coldController.setMode(1);
             break;
         case IR_3:
+            coldController.setMode(2);
             break;
         //Fire
         case IR_4:

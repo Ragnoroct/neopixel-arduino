@@ -38,16 +38,17 @@ void PoisonController::setMode(int mode)
 {
     //off
     if (mode == 0) {
-        currentBrightness = MIN_BRIGHTNESS - 1.0; //turn off
+        currentBrightness = MIN_BRIGHTNESS; //turn off
     //less
     } else if (mode == 1) {
         currentBrightness -= ONE_BRIGHTNESS_STEP;
-        currentBrightness = currentBrightness > MIN_BRIGHTNESS ? currentBrightness : MIN_BRIGHTNESS;
     //more
     } else if (mode == 2) {
         currentBrightness += ONE_BRIGHTNESS_STEP;
-        currentBrightness = currentBrightness < MAX_BRIGHTNESS ? currentBrightness : MAX_BRIGHTNESS;
     }
+
+    currentBrightness = currentBrightness > MIN_BRIGHTNESS ? currentBrightness : MIN_BRIGHTNESS;    //min bound
+    currentBrightness = currentBrightness < MAX_BRIGHTNESS ? currentBrightness : MAX_BRIGHTNESS;    //max bound
 }
 
 void PoisonController::loop() {
@@ -55,7 +56,7 @@ void PoisonController::loop() {
     CRGB color = COLOR;
 
     //Turn off
-    if (currentBrightness <= MIN_BRIGHTNESS) {
+    if (currentBrightness - .00001 <= MIN_BRIGHTNESS) {
         color = 0x0;
     //Lower brightness
     } else {
