@@ -152,12 +152,12 @@ void stripLoop() {
     poisonController.loop();
 
 
-    for (int i = 0; i < NUMPIXELS_FRONT; i++) {
-        strip.setPixelColor(i, 0x010000);
-    }
-    for (int i = 0; i < NUMPIXELS_BACK; i++) {
-        backStrip.setPixelColor(i, 0x010000);
-    }
+    // for (int i = 0; i < NUMPIXELS_FRONT; i++) {
+    //     strip.setPixelColor(i, 0x010000);
+    // }
+    // for (int i = 0; i < NUMPIXELS_BACK; i++) {
+    //     backStrip.setPixelColor(i, 0x010000);
+    // }
     // Refresh strips
     backStrip.show();
     strip.show();                    

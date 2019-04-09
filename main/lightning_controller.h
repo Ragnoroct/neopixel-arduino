@@ -4,10 +4,10 @@
 class LightningController {
     private:
         //Constants
-        const int FRONTMODULE_LOWER_LIMIT = 7;
-        const int FRONTMODULE_UPPER_LIMIT = 10;
-        const int BACKMODULE_LOWER_LIMIT = 18;
-        const int BACKMODULE_UPPER_LIMIT = 23;
+        const int FRONTMODULE_LOWER_LIMIT = 4;
+        const int FRONTMODULE_UPPER_LIMIT = 6;
+        const int BACKMODULE_LOWER_LIMIT = 9;
+        const int BACKMODULE_UPPER_LIMIT = 14;
 
         static const int STEPS_NUM = 15;
         const float BRIGHTNESS_STEPS[STEPS_NUM] = { 1, 0, 1, 0, 1, 0, 0, 0, .8, 0, .99, 0, 0, .7, 0 };

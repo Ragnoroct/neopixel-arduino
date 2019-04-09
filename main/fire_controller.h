@@ -5,10 +5,10 @@ class FireController {
     private:
         Adafruit_DotStar* strip;
         Adafruit_DotStar* stripBack;
-        const int FRONTMODULE_LOWER_LIMIT = 3;
-        const int FRONTMODULE_UPPER_LIMIT = 6;
-        const int BACKMODULE_LOWER_LIMIT = 24;
-        const int BACKMODULE_UPPER_LIMIT = 28;
+        const int FRONTMODULE_LOWER_LIMIT = 2;
+        const int FRONTMODULE_UPPER_LIMIT = 3;
+        const int BACKMODULE_LOWER_LIMIT = 4;
+        const int BACKMODULE_UPPER_LIMIT = 8;
 
         float fireStep[10] = { .1, .2, .3, .4, .5, .6, 1 };
         uint32_t fireColor = 0xed310b;

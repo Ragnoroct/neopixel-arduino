@@ -5,10 +5,10 @@ class HealthController {
     private:
         //Constants
         //Index definitions
-        const int FRONTMODULE_LOWER_INDEX = 16;
-        const int FRONTMODULE_UPPER_INDEX = 20;
-        const int BACKMODULE_LOWER_INDEX = 0;
-        const int BACKMODULE_UPPER_INDEX = 9;
+        const int FRONTMODULE_LOWER_INDEX = 10;
+        const int FRONTMODULE_UPPER_INDEX = 13;
+        const int BACKMODULE_LOWER_INDEX = 23;
+        const int BACKMODULE_UPPER_INDEX = 32;
         const uint32_t HEALTH_COLOR = 0xFF0000;
         const int MODE_0_TICK_TIMEOUT = 10;
         const int MODE_1_TICK_TIMEOUT = 150;
@@ -70,7 +70,7 @@ void HealthController::loop() {
             tail = healthCurrentPixel - 1;
         //back
         if (backHealthCurrentPixel == BACKMODULE_LOWER_INDEX)
-            backTail = FRONTMODULE_UPPER_INDEX;
+            backTail = BACKMODULE_UPPER_INDEX;
         else
             backTail = backHealthCurrentPixel - 1;
 

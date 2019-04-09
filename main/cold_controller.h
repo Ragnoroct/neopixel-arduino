@@ -4,10 +4,10 @@
 class ColdController {
     private:
         //Constants
-        const int FRONTMODULE_LOWER_LIMIT = 11;
-        const int FRONTMODULE_UPPER_LIMIT = 15;
-        const int BACKMODULE_LOWER_LIMIT = 10;
-        const int BACKMODULE_UPPER_LIMIT = 17;
+        const int FRONTMODULE_LOWER_LIMIT = 7;
+        const int FRONTMODULE_UPPER_LIMIT = 9;
+        const int BACKMODULE_LOWER_LIMIT = 15;
+        const int BACKMODULE_UPPER_LIMIT = 22;
         
         const uint32_t COLOR = 0x70DBDB;
         const double ONE_BRIGHTNESS_STEP = .003;    //speed at which the controller changes the brightness
