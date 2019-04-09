@@ -80,7 +80,7 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
 {
     if (results.value == IR_REPEAT) {
         results.value = lastIRValue;
-    } else {
+    } else if (results.value != IR_PLAYPAUSE) {
         lastIRValue = results.value;
     }
 
@@ -95,9 +95,9 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
             break;
         case IR_BLUE_LED_ON:
             break;
-        //Pause loop
+        //Pause/play loop
         case IR_PLAYPAUSE:
-            isPaused ^= 1;
+            isPaused = isPaused ? false : true;
             break;
         //Lightning
         case IR_VOLUME_MINUS:
@@ -152,43 +152,38 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
   }
 } 
 
-
 void stripLoop() {
-    lightningController.loop();
-    healthController.loop();
-    coldController.loop();
-    fireController.loop();
-    poisonController.loop();
+    if (isPaused == false) {
+        lightningController.loop();
+        healthController.loop();
+        coldController.loop();
+        fireController.loop();
+        poisonController.loop();
+    } else {
+        offLoop();
+    }
 
-
-    // for (int i = 0; i < NUMPIXELS_FRONT; i++) {
-    //     strip.setPixelColor(i, 0x010000);
-    // }
-    // for (int i = 0; i < NUMPIXELS_BACK; i++) {
-    //     backStrip.setPixelColor(i, 0x010000);
-    // }
     // Refresh strips
     backStrip.show();
     strip.show();                    
 }
 
 void offLoop() {
-//   for (int i = 0; i < NUMPIXELS; i++) {
-//     strip.setPixelColor(i, 0x0);
-//   }
-//   strip.show();
+  for (int i = 0; i < NUMPIXELS_FRONT; i++) {
+    strip.setPixelColor(i, 0x0);
+  }
+  for (int i = 0; i < NUMPIXELS_BACK; i++) {
+    backStrip.setPixelColor(i, 0x0);
+  }
 }
 
 void loop() {
-   int i=0;
-   if (irrecv.decode(&results)) {
-     translateIR(&remoteAction);
-     irrecv.resume(); // Receive the next value
-   }
+    //parse remote
+    if (irrecv.decode(&results)) {
+        translateIR(&remoteAction);
+        irrecv.resume(); // Receive the next value
+    }
 
-//    if (isPaused) {
-//     offLoop();
-//     return;
-//    }
-  stripLoop();
+    //main pixel logic
+    stripLoop();
 }
