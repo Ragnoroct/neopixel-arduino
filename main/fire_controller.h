@@ -45,7 +45,7 @@ void FireController::setMode(int mode)
 void FireController::loop() {
     if (fireMode == 0) {
         setStripArrayColor(strip, 0X0, FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
-        setStripArrayColor(strip, 0X0, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+        setStripArrayColor(stripBack, 0X0, BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
     } else if (fireMode == 1) {
         if (fireCurrentStep < fireDuration) {
             int stepCoefficientIndex = fireCurrentStep / fireStepsPerTransition;
@@ -55,7 +55,7 @@ void FireController::loop() {
             color %= (colorCoefficient * 255);
 
             setStripArrayColor(strip, rgbToHex(color), FRONTMODULE_LOWER_LIMIT, FRONTMODULE_UPPER_LIMIT);
-            setStripArrayColor(strip, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
+            setStripArrayColor(stripBack, rgbToHex(color), BACKMODULE_LOWER_LIMIT, BACKMODULE_UPPER_LIMIT);
 
             fireCurrentStep++;
         } else {
