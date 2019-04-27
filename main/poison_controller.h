@@ -1,5 +1,6 @@
 #include "color_lib.h"
 #include <Adafruit_DotStar.h>
+#include <Adafruit_NeoPixel.h>
 
 class PoisonController {
     private:
@@ -14,17 +15,17 @@ class PoisonController {
         const double MAX_BRIGHTNESS = 1.0;
         const double MIN_BRIGHTNESS = 0.0;
         
-        Adafruit_DotStar* strip;
+        Adafruit_NeoPixel* strip;
         Adafruit_DotStar* stripBack;
         double currentBrightness = 0.0;
         int mode = 0;
     public:
-        PoisonController(Adafruit_DotStar*, Adafruit_DotStar*);
+        PoisonController(Adafruit_NeoPixel*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-PoisonController::PoisonController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
+PoisonController::PoisonController(Adafruit_NeoPixel* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip; 
     stripBack = injectedStripBack;

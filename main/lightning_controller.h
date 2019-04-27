@@ -1,5 +1,6 @@
 #include "color_lib.h"
 #include <Adafruit_DotStar.h>
+#include <Adafruit_NeoPixel.h>
 
 class LightningController {
     private:
@@ -14,18 +15,18 @@ class LightningController {
         const uint32_t COLOR = 0x720485;
         const int STEP_DURRATION = 10; //how many steps for change in animation
         
-        Adafruit_DotStar* strip;
+        Adafruit_NeoPixel* strip;
         Adafruit_DotStar* stripBack;
         int currentStep = 0;
         int currentBrightnessIndex = 0;
         int mode = 0;
     public:
-        LightningController(Adafruit_DotStar*, Adafruit_DotStar*);
+        LightningController(Adafruit_NeoPixel*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-LightningController::LightningController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
+LightningController::LightningController(Adafruit_NeoPixel* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip; 
     stripBack = injectedStripBack;

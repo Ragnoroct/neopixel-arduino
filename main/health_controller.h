@@ -1,5 +1,6 @@
 #include "color_lib.h"
 #include <Adafruit_DotStar.h>
+#include <Adafruit_NeoPixel.h>
 
 class HealthController {
     private:
@@ -21,19 +22,19 @@ class HealthController {
         int backHealthCounter = 0;
         int healthOn = true;
         
-        Adafruit_DotStar* strip;
+        Adafruit_NeoPixel* strip;
         Adafruit_DotStar* stripBack;
         int ticksTimout = MODE_0_TICK_TIMEOUT * TICK_TIMEOUT_MODIFIER;
         int ticksTimoutBack = MODE_0_TICK_TIMEOUT;
         int mode = 0;
     public:
-        HealthController(Adafruit_DotStar*, Adafruit_DotStar*);
+        HealthController(Adafruit_NeoPixel*, Adafruit_DotStar*);
         void loop();
         void runLoop(Adafruit_DotStar* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex);
         void setMode(int mode);
 };
 
-HealthController::HealthController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
+HealthController::HealthController(Adafruit_NeoPixel* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip;
     stripBack = injectedStripBack;
@@ -62,6 +63,28 @@ void HealthController::setMode(int mode)
 }
 
 void HealthController::runLoop(Adafruit_DotStar* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex)
+{
+    int tail;
+
+    //Normal pulsing mode (0|1)
+    if (counter(healthCounter, ticksTimout) == false) return;
+
+    //front
+    if (currentPixel == lowerIndex)
+        tail = upperIndex;
+    else
+        tail = currentPixel - 1;
+
+    //Set front module pixels
+    strip->setPixelColor(tail, 0);   //turn last pixel off 
+    strip->setPixelColor(currentPixel, HEALTH_COLOR);
+
+    currentPixel++;
+    if (currentPixel > upperIndex)
+        currentPixel = lowerIndex;
+}
+
+void HealthController::runLoop(Adafruit_NeoPixel* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex)
 {
     int tail;
 

@@ -1,4 +1,5 @@
 #include <Adafruit_DotStar.h>
+#include <Adafruit_NeoPixel.h>
 #include <SPI.h>
 #include <IRremote.h>
 #include "color_lib.h"
@@ -43,7 +44,8 @@ int RED_LED = 12;
 #define IR_9 0xFF52AD  
 #define IR_REPEAT 0xFFFFFFFF
 
-Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, 2, 3, DOTSTAR_BGR);
+// Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, 2, 3, DOTSTAR_BGR);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS_FRONT, 5, NEO_GRB + NEO_KHZ800);
 Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, DOTSTAR_BGR);
 
 //Controllers

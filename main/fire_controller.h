@@ -1,9 +1,10 @@
 #include "color_lib.h"
 #include <Adafruit_DotStar.h>
+#include <Adafruit_NeoPixel.h>
 
 class FireController {
     private:
-        Adafruit_DotStar* strip;
+        Adafruit_NeoPixel* strip;
         Adafruit_DotStar* stripBack;
         const int FRONTMODULE_LOWER_LIMIT = 2;
         const int FRONTMODULE_UPPER_LIMIT = 3;
@@ -17,12 +18,12 @@ class FireController {
         int fireCurrentStep = 0;
     public:
         int fireMode = 0;
-        FireController(Adafruit_DotStar*, Adafruit_DotStar*);
+        FireController(Adafruit_NeoPixel*, Adafruit_DotStar*);
         void loop();
         void setMode(int mode);
 };
 
-FireController::FireController(Adafruit_DotStar* injectedStrip, Adafruit_DotStar* injectedStripBack) 
+FireController::FireController(Adafruit_NeoPixel* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip;
     stripBack = injectedStripBack;
