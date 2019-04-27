@@ -31,6 +31,7 @@ class HealthController {
         HealthController(Adafruit_NeoPixel*, Adafruit_DotStar*);
         void loop();
         void runLoop(Adafruit_DotStar* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex);
+        void runLoop(Adafruit_NeoPixel* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex);
         void setMode(int mode);
 };
 
