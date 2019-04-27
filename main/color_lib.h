@@ -3,7 +3,7 @@
 
 #include <FastLED.h>
 #include <Adafruit_DotStar.h>
-#include <Adafruit_NeoPixel.h>
+#include "NeopixelStrip.h"
 
 // uint32_t linearShade(float percent, uint32_t color) {
 //         int r = ((color >> 16) & 0xFF); // Extract the RR byte
@@ -26,7 +26,7 @@ void setStripArrayColor(Adafruit_DotStar* strip, uint32_t color, int lowerIndex,
     }
 }
 
-void setStripArrayColor(Adafruit_NeoPixel* strip, uint32_t color, int lowerIndex, int upperIndex) {
+void setStripArrayColor(NeopixelStrip* strip, uint32_t color, int lowerIndex, int upperIndex) {
     for (int i = lowerIndex; i <= upperIndex; i++) {
         strip->setPixelColor(i, color);
     }
