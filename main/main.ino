@@ -45,7 +45,7 @@ int RED_LED = 12;
 #define IR_REPEAT 0xFFFFFFFF
 
 // Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, 2, 3, DOTSTAR_BGR);
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS_FRONT, 5, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS_FRONT, 3, NEO_GRB + NEO_KHZ800);
 Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, DOTSTAR_BGR);
 
 //Controllers
