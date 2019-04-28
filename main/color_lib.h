@@ -35,7 +35,7 @@ void setStripArrayColor(Adafruit_NeoPixel* strip, uint32_t color, int lowerIndex
 bool counter(int &counter, int timeout)
 {
     counter++;
-    if (counter > timeout) {
+    if (counter > timeout + timeout) {
         counter = 0;
         return true;
     } else {

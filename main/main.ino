@@ -182,6 +182,7 @@ void offLoop() {
 
 void loop() {
     //parse remote
+    while (!irrecv.isIdle());  // if not idle, wait till complete
     if (irrecv.decode(&results)) {
         translateIR(&remoteAction);
         irrecv.resume(); // Receive the next value
