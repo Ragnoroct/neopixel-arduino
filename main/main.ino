@@ -1,16 +1,13 @@
-#define FASTLED_INTERRUPT_RETRY_COUNT 1
-
 #include <Adafruit_DotStar.h>
+#include <Adafruit_NeoPixel.h>
 #include <SPI.h>
 #include <IRremote.h>
-#include <FastLED.h>
-// #include "color_lib.h"
-// #include "fire_controller.h"
-// #include "poison_controller.h"
-// #include "cold_controller.h"
-// #include "lightning_controller.h"
+#include "color_lib.h"
+#include "fire_controller.h"
+#include "poison_controller.h"
+#include "cold_controller.h"
+#include "lightning_controller.h"
 #include "health_controller.h"
-#include "NeopixelStrip.h"
 
 #define NUMPIXELS_FRONT 21 // Number of LEDs in strip
 #define NUMPIXELS_BACK 33 // Number of LEDs in strip
@@ -48,42 +45,25 @@ int RED_LED = 12;
 #define IR_REPEAT 0xFFFFFFFF
 
 // Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS_FRONT, 2, 3, DOTSTAR_BGR);
-
-// Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, 3, NEO_GRB + NEO_KHZ800);
-
-NeopixelStrip strip = NeopixelStrip(NUMPIXELS_FRONT, 3);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS_FRONT, 3, NEO_GRB + NEO_KHZ800);
 Adafruit_DotStar backStrip = Adafruit_DotStar(NUMPIXELS_BACK, DOTSTAR_BGR);
+
+//Controllers
+FireController fireController = FireController(&strip, &backStrip);
+PoisonController poisonController = PoisonController(&strip, &backStrip);
+ColdController coldController = ColdController(&strip, &backStrip);
+LightningController lightningController = LightningController(&strip, &backStrip);
+HealthController healthController = HealthController(&strip, &backStrip);
 
 IRrecv irrecv(RECV_PIN);
 decode_results results;
 uint32_t lastIRValue;
 
-// How many leds in your strip?
-#define NUM_LEDS 1
-
-// For led chips like Neopixels, which have a data line, ground, and power, you just
-// need to define DATA_PIN.  For led chipsets that are SPI based (four wires - data, clock,
-// ground, and power), like the LPD8806 define both DATA_PIN and CLOCK_PIN
-#define DATA_PIN 3
-#define CLOCK_PIN 13
-
-// Define the array of leds
-CRGB leds[1];
-
-HealthController healthController = HealthController(&strip, &backStrip);
 void setup() {
-    backStrip.begin();
-    backStrip.show();
-    strip.begin(); // Initialize pins for output
-    strip.show();  // Turn all LEDs off ASAP
-    // FastLED.addLeds<NEOPIXEL, 3>(leds, 1);
-    // //Controllers
-    // FireController fireController = FireController(&strip, &backStrip);
-    // PoisonController poisonController = PoisonController(&strip, &backStrip);
-    // ColdController coldController = ColdController(&strip, &backStrip);
-    // LightningController lightningController = LightningController(&strip, &backStrip);
-    
-
+  backStrip.begin();
+  backStrip.show();
+  strip.begin(); // Initialize pins for output
+  strip.show();  // Turn all LEDs off ASAP
   pinMode(RECV_PIN, INPUT);  
   pinMode(BLUE_LED, OUTPUT); 
   pinMode(RED_LED, OUTPUT);
@@ -106,87 +86,83 @@ void translateIR(int * remoteAction) // takes action based on IR code received d
         lastIRValue = results.value;
     }
 
-    Serial.println("used remote");
     Serial.println(results.value, HEX);
-    Serial.println("");
-
     switch(results.value) {
-        // case IR_CHANNEL_MINUS:
-        //     break;
-        // case IR_CHANNEL:
-        //     break;
-        // case IR_CHANNEL_PLUS:
-        //     break;
-        // case IR_BLUE_LED_OFF:
-        //     break;
-        // case IR_BLUE_LED_ON:
-        //     break;
-        // //Pause/play loop
+        case IR_CHANNEL_MINUS:
+            break;
+        case IR_CHANNEL:
+            break;
+        case IR_CHANNEL_PLUS:
+            break;
+        case IR_BLUE_LED_OFF:
+            break;
+        case IR_BLUE_LED_ON:
+            break;
+        //Pause/play loop
         case IR_PLAYPAUSE:
             isPaused = isPaused ? false : true;
             break;
-        // //Lightning
-        // case IR_VOLUME_MINUS:
-        //     lightningController.setMode(0);
-        //     break;
-        // case IR_VOLUME_PLUS:
-        //     lightningController.setMode(1);
-        //     break;
-        // case IR_EQ:
-        //     lightningController.setMode(2);
-        //     break;
+        //Lightning
+        case IR_VOLUME_MINUS:
+            lightningController.setMode(0);
+            break;
+        case IR_VOLUME_PLUS:
+            lightningController.setMode(1);
+            break;
+        case IR_EQ:
+            lightningController.setMode(2);
+            break;
         //Health
-        // case IR_0:
-        //     healthController.setMode(0);
-        //     break;
-        // case IR_100_PLUS:
-        //     healthController.setMode(1);
-        //     break;
-        // case IR_200_PLUS:
-        //     healthController.setMode(2);
-        //     break;
-        // //Cold
-        // case IR_1:
-        //     coldController.setMode(0);
-        //     break;
-        // case IR_2:
-        //     coldController.setMode(1);
-        //     break;
-        // case IR_3:
-        //     coldController.setMode(2);
-        //     break;
-        // //Fire
-        // case IR_4:
-        //     fireController.setMode(0);
-        //     break;
-        // case IR_5:
-        //     fireController.setMode(1);
-        //     break;
-        // case IR_6:
-        //     fireController.setMode(2);
-        //     break;
-        // //Poison
-        // case IR_7:
-        //     poisonController.setMode(0);
-        //     break;
-        // case IR_8:
-        //     poisonController.setMode(1);
-        //     break;
-        // case IR_9:
-        //     poisonController.setMode(2);
-        //     break;
+        case IR_0:
+            healthController.setMode(0);
+            break;
+        case IR_100_PLUS:
+            healthController.setMode(1);
+            break;
+        case IR_200_PLUS:
+            healthController.setMode(2);
+            break;
+        //Cold
+        case IR_1:
+            coldController.setMode(0);
+            break;
+        case IR_2:
+            coldController.setMode(1);
+            break;
+        case IR_3:
+            coldController.setMode(2);
+            break;
+        //Fire
+        case IR_4:
+            fireController.setMode(0);
+            break;
+        case IR_5:
+            fireController.setMode(1);
+            break;
+        case IR_6:
+            fireController.setMode(2);
+            break;
+        //Poison
+        case IR_7:
+            poisonController.setMode(0);
+            break;
+        case IR_8:
+            poisonController.setMode(1);
+            break;
+        case IR_9:
+            poisonController.setMode(2);
+            break;
   }
 } 
 
 void stripLoop() {
     if (isPaused == false) {
-        // lightningController.loop();
+        lightningController.loop();
         healthController.loop();
-        // coldController.loop();
-        // fireController.loop();
-        // poisonController.loop();
+        coldController.loop();
+        fireController.loop();
+        poisonController.loop();
     } else {
-        Serial.println("off loop");
         offLoop();
     }
 
@@ -204,11 +180,6 @@ void offLoop() {
   }
 }
 
-
-
-// void setup() {
-// }
-
 void loop() {
     //parse remote
     if (irrecv.decode(&results)) {
@@ -218,15 +189,4 @@ void loop() {
 
     //main pixel logic
     stripLoop();
-    
-    
-    // Turn the LED on, then pause
-    // leds[0] = CRGB::Red;
-    // FastLED.show();
-    // delay(500);
-    // // Now turn the LED off, then pause
-    // leds[0] = CRGB::Black;
-    // FastLED.show();
-    // delay(500);
-    
 }

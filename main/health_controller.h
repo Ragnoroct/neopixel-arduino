@@ -1,6 +1,6 @@
 #include "color_lib.h"
 #include <Adafruit_DotStar.h>
-#include "NeopixelStrip.h"
+#include <Adafruit_NeoPixel.h>
 
 class HealthController {
     private:
@@ -22,20 +22,20 @@ class HealthController {
         int backHealthCounter = 0;
         int healthOn = true;
         
-        NeopixelStrip* strip;
+        Adafruit_NeoPixel* strip;
         Adafruit_DotStar* stripBack;
         int ticksTimout = MODE_0_TICK_TIMEOUT * TICK_TIMEOUT_MODIFIER;
         int ticksTimoutBack = MODE_0_TICK_TIMEOUT;
         int mode = 0;
     public:
-        HealthController(NeopixelStrip*, Adafruit_DotStar*);
+        HealthController(Adafruit_NeoPixel*, Adafruit_DotStar*);
         void loop();
         void runLoop(Adafruit_DotStar* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex);
-        void runLoop(NeopixelStrip* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex);
+        void runLoop(Adafruit_NeoPixel* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex);
         void setMode(int mode);
 };
 
-HealthController::HealthController(NeopixelStrip* injectedStrip, Adafruit_DotStar* injectedStripBack) 
+HealthController::HealthController(Adafruit_NeoPixel* injectedStrip, Adafruit_DotStar* injectedStripBack) 
 { 
     strip = injectedStrip;
     stripBack = injectedStripBack;
@@ -85,7 +85,7 @@ void HealthController::runLoop(Adafruit_DotStar* strip, int &currentPixel, int &
         currentPixel = lowerIndex;
 }
 
-void HealthController::runLoop(NeopixelStrip* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex)
+void HealthController::runLoop(Adafruit_NeoPixel* strip, int &currentPixel, int &healthCounter, int ticksTimout, int upperIndex, int lowerIndex)
 {
     int tail;
 

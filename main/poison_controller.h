@@ -1,5 +1,6 @@
 #include "color_lib.h"
 #include <Adafruit_DotStar.h>
+#include <Adafruit_NeoPixel.h>
 
 class PoisonController {
     private:
